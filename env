@@ -4,7 +4,21 @@
 # Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
 # See the documentation for all the connection string options: https://pris.ly/d/connection-strings
 
-DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+# DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+# DATABASE_URL='postgresql://dlza-juridica:2ZHQi8pq6Bydv05H@db.gptropjnecbhjhccluyt.supabase.co:5432/postgres'
+
+# DATABASE_URL='postgresql://postgres.gptropjnecbhjhccluyt:2ZHQi8pq6Bydv05H@aws-0-us-west-1.pooler.supabase.com:6543/dlza-juridica'
+# DIRECT_URL='postgresql://postgres.gptropjnecbhjhccluyt:2ZHQi8pq6Bydv05H@aws-0-us-west-1.pooler.supabase.com:5432/dlza-juridica'
+
+# Connect to Supabase via connection pooling with Supavisor.
+DATABASE_URL="postgresql://postgres.gptropjnecbhjhccluyt:2ZHQi8pq6Bydv05H@aws-0-us-west-1.pooler.supabase.com:5432/postgres?pgbouncer=true"
+
+# Direct connection to the database. Used for migrations.
+DIRECT_URL="postgresql://postgres.gptropjnecbhjhccluyt:2ZHQi8pq6Bydv05H@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
+
+
+# DATABASE_URL='postgresql://postgres.gptropjnecbhjhccluyt:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+
 # Connect to Supabase via connection pooling with Supavisor.
 # DATABASE_URL="postgres://postgres.[your-supabase-project]:[password]@aws-0-[aws-region].pooler.supabase.com:6543/postgres?pgbouncer=true"
 # url      = "postgres://postgres.bjnrqrdjyrsutqdwncxc:passSupabaseo.@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
