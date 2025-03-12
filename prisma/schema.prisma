@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
@@ -19,4 +20,21 @@ model User {
   email     String   @unique
   name      String?
   createdAt DateTime @default(now())
+}
+
+model Contract {
+  id               String   @id @default(cuid())
+  title            String
+  object           String
+  desc             String
+  content          String
+  dateStart        DateTime @default(now())
+  dateEnd          DateTime @default(now())
+  subject          String
+  ammount          Float
+  type             String
+  guaranteeAmmount Float
+  guaranteeType    String
+  guaranteeDesc    String
+  createdAt        DateTime @default(now())
 }
