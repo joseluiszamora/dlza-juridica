@@ -28,6 +28,7 @@ model Contract {
   object    String
   desc      String
   content   String
+  status    String   @default("Active")
   dateStart DateTime @default(now())
   dateEnd   DateTime @default(now())
   ammount   Float
