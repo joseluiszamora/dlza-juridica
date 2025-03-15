@@ -40,18 +40,24 @@ export default function Contratos() {
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[1102px]">
-          <Table>
-            {/* Table Header */}
-            <ContratosTableHeader />
-            
-            {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {!loading && files}
+          
+            {!loading && 
+            <Table>
+              {/* Table Header */}
+              <ContratosTableHeader />
+              
+              {/* Table Body */}
+              <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+              {files}
+              </TableBody>
+            </Table>
+            }
             {loading && (
-              <span className="loading loading-ring loading-lg"></span>
+              <div className="flex items-center justify-center h-32">
+                <div className="w-8 h-8 border-t-2 border-b-2 border-brand-500 rounded-full animate-spin"></div>
+              </div>
             )}
-            </TableBody>
-          </Table>
+          
         </div>
       </div>
     </div>

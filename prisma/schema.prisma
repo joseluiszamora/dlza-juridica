@@ -1,18 +1,13 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions")]
 }
 
 model User {
@@ -23,14 +18,14 @@ model User {
 }
 
 model Contract {
-  id        Int      @id @default(autoincrement())
   title     String
   object    String
   desc      String
   content   String
-  status    String   @default("Active")
   dateStart DateTime @default(now())
   dateEnd   DateTime @default(now())
   ammount   Float
   createdAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  status    String   @default("Active")
 }
