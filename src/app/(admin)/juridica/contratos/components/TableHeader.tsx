@@ -25,19 +25,31 @@ export default function ContratosTableHeader() {
         isHeader
         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
       >
-        Descripcion
-      </TableCell>
-      <TableCell
-        isHeader
-        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-      >
         Estado
       </TableCell>
       <TableCell
         isHeader
         className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
       >
-        Monto
+        Monto (Bs.)
+      </TableCell>
+      <TableCell
+        isHeader
+        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+      >
+        Fecha Inicio
+      </TableCell>
+      <TableCell
+        isHeader
+        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+      >
+        Fecha Fin
+      </TableCell>
+      <TableCell
+        isHeader
+        className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+      >
+        Descripción
       </TableCell>
     </TableRow>
   </TableHeader>);

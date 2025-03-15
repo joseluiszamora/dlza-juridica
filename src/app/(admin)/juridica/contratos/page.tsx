@@ -39,7 +39,7 @@ export default function Contratos() {
   <div>
     <PageBreadcrumb pageTitle="Contratos" />
 
-    {/* Form Nuevo Contrato */}
+    {/* Form Nuevo Contrato && search Contrato */}
     <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 xl:p-5 dark:bg-white/[0.03] mb-5">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
       <NuevoContrato onSave={getData} />

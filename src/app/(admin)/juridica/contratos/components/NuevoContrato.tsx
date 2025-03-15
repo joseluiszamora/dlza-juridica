@@ -1,11 +1,10 @@
 "use client";
-import Input from "@/components/form/input/InputField";
 import Radio from "@/components/form/input/Radio";
 import Button from "@/components/ui/button/Button";
 import { SpinnerLoader } from "@/components/ui/loader/loaders";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
-import { BoxIcon, PlusIcon } from "@/icons";
+import { PlusIcon } from "@/icons";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";

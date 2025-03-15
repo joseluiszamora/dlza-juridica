@@ -2,6 +2,9 @@ import Badge from "@/components/ui/badge/Badge";
 import { TableRow, TableCell } from "@/components/ui/table";
 import Contrato from "@/data/Contrato";
 import Image from "next/image";
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+
 
 interface Props {
   contrato: Contrato;
@@ -34,22 +37,7 @@ const ContratoListItem: React.FC<Props> = (props) => {
       {props.contrato.title}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-      <div className="flex -space-x-2">
-        {/* {order.team.images.map((teamImage, index) => (
-          <div
-            key={index}
-            className="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-          >
-            <Image
-              width={24}
-              height={24}
-              src={teamImage}
-              alt={`Team member ${index + 1}`}
-              className="w-full"
-            />
-          </div>
-        ))} */}
-      </div>
+      {props.contrato.object}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
       <Badge
@@ -67,6 +55,15 @@ const ContratoListItem: React.FC<Props> = (props) => {
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
       {props.contrato.ammount}
+    </TableCell>
+    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+      {format(props.contrato.dateStart, 'dd/MM/yyyy', { locale: es })}
+    </TableCell>
+    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+      {format(props.contrato.dateEnd, 'dd/MM/yyyy', { locale: es })}
+    </TableCell>
+    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+      {props.contrato.desc}
     </TableCell>
   </TableRow>
   );
