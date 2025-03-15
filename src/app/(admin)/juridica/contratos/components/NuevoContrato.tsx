@@ -21,7 +21,11 @@ type Inputs = {
   status: string;
 };
 
-export default function NuevoContrato() {
+interface Props {
+  onSave: () => void;
+}
+
+const NuevoContrato: React.FC<Props> = (props) => {
   const router = useRouter();
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState(false);
@@ -62,6 +66,7 @@ export default function NuevoContrato() {
     if (response.ok) {
       router.push("/juridica/contratos");
       closeModal();
+      props.onSave();
     }
   };
 
@@ -289,3 +294,5 @@ export default function NuevoContrato() {
     </label>;
   }
 }
+
+export default NuevoContrato;

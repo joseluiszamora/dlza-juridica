@@ -16,6 +16,10 @@ export default function Contratos() {
   const [contratos, setContratos] = useState([] as Array<Contrato>);
 
   useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = () => {
     setLoading(true);
     fetch("/api/contratos")
       .then((response) => response.json())
@@ -24,7 +28,7 @@ export default function Contratos() {
         setContratos(data);
         console.log(data);
       });
-  }, []);
+  };
 
   const files = contratos.map((contratoel: Contrato) => (
     <ContratoListItem contrato={contratoel} key={contratoel.id} />
@@ -35,7 +39,7 @@ export default function Contratos() {
     <PageBreadcrumb pageTitle="Contratos" />
 
     {/* Form Nuevo Contrato */}
-    <NuevoContrato />
+    <NuevoContrato onSave={getData      } />
 
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
