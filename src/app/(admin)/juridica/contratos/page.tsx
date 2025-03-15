@@ -10,6 +10,7 @@ import NuevoContrato from "./components/NuevoContrato";
 import ContratosTableHeader from "./components/TableHeader";
 import Contrato from "@/data/Contrato";
 import ContratoListItem from "./components/TableItem";
+import BuscarContrato from "./components/BuscarContrato";
 
 export default function Contratos() {
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,13 @@ export default function Contratos() {
     <PageBreadcrumb pageTitle="Contratos" />
 
     {/* Form Nuevo Contrato */}
-    <NuevoContrato onSave={getData      } />
+    <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 xl:p-5 dark:bg-white/[0.03] mb-5">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <NuevoContrato onSave={getData} />
+      <BuscarContrato />
+      </div>
+      
+    </div>
 
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
       <div className="max-w-full overflow-x-auto">
