@@ -14,19 +14,22 @@ import BuscarContrato from "./components/BuscarContrato";
 
 export default function Contratos() {
   const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [page, setPage] = useState(1);
   const [contratos, setContratos] = useState([] as Array<Contrato>);
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [title, page]);
 
   const getData = () => {
     setLoading(true);
-    fetch("/api/contratos")
+    fetch("/api/contratos?page=" + page + "&title=" + title)  
       .then((response) => response.json())
       .then((data) => {
         setLoading(false);
-        setContratos(data);
+        setContratos(data.data);
+        console.log("###############");
         console.log(data);
       });
   };

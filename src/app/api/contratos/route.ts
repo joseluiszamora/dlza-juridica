@@ -2,15 +2,44 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // GET - Obtener todos los contratos
-export async function GET() {
+export async function GET(req: Request) {
+  console.log('GET /api/contratos')
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+  const pageSize = 10;
+  const page = parseInt(searchParams.get("page")!);
+  const skip = (page - 1) * pageSize;
+
+  const title = searchParams.get("title");
+
+  // Make Filter
+  const where: { bajaLogica: boolean; title?: string } = {
+    bajaLogica: false,
+  };
+
+  if (title != "") {
+    where["title"] = title!;
+  }
+
+  console.log('where:', where)
+
   try {
+    // const count = await prisma.contract.count({
+    //   where: where,
+    // });
+
     const contracts = await prisma.contract.findMany({
+      // where: where,
       orderBy: {
         createdAt: 'desc',
-      },
+      },      
+      // skip,
+      // take: pageSize,
     })
     
-    return NextResponse.json(contracts)
+    return NextResponse.json({
+      // total: count,
+      data: contracts
+    })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ error: 'Error al obtener contratos' }, { status: 500 })

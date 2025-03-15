@@ -18,14 +18,15 @@ model User {
 }
 
 model Contract {
-  title     String
-  object    String
-  desc      String
-  content   String
-  dateStart DateTime @default(now())
-  dateEnd   DateTime @default(now())
-  ammount   Float
-  createdAt DateTime @default(now())
-  id        Int      @id @default(autoincrement())
-  status    String   @default("Active")
+  title      String
+  object     String
+  desc       String
+  content    String
+  dateStart  DateTime @default(now())
+  dateEnd    DateTime @default(now())
+  ammount    Float
+  createdAt  DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  status     String   @default("Active")
+  bajaLogica Boolean  @default(false)
 }

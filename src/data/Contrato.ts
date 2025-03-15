@@ -8,6 +8,7 @@ export default class Contrato {
   dateStart: Date;
   dateEnd: Date;
   ammount: number;
+  bajaLogica: boolean;
 
   constructor(
     id: number,
@@ -18,7 +19,8 @@ export default class Contrato {
     status: string,
     dateStart: Date,
     dateEnd: Date,
-    ammount: number
+    ammount: number,
+    bajaLogica: boolean
   ) {
     this.id = id;
     this.title = title;
@@ -29,5 +31,6 @@ export default class Contrato {
     this.dateStart = dateStart;
     this.dateEnd = dateEnd;
     this.ammount = ammount;
+    this.bajaLogica = bajaLogica;
   }
 }
