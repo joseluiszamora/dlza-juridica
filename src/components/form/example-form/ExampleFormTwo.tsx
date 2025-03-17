@@ -8,16 +8,16 @@ import Radio from "../input/Radio";
 import Form from "../Form";
 import { CalenderIcon } from "../../../icons";
 import Button from "../../ui/button/Button";
-import Flatpickr from "react-flatpickr";
+
 import "flatpickr/dist/themes/light.css";
 
 export default function ExampleFormTwo() {
   const [selectedOption, setSelectedOption] = useState<string>("Free");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  // const [dateOfBirth, setDateOfBirth] = useState("");
 
-  const handleDateChange = (date: Date[]) => {
-    setDateOfBirth(date[0].toLocaleDateString()); // Handle selected date and format it
-  };
+  // const handleDateChange = (date: Date[]) => {
+  //   setDateOfBirth(date[0].toLocaleDateString()); // Handle selected date and format it
+  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +77,7 @@ export default function ExampleFormTwo() {
           <div className="col-span-2">
             <Label htmlFor="lastName">Date of Birth</Label>
             <div className="relative w-full flatpickr-wrapper">
-              <Flatpickr
+              {/* <Flatpickr
                 value={dateOfBirth} // Set the value to the state
                 onChange={handleDateChange} // Handle the date change
                 options={{
@@ -85,7 +85,7 @@ export default function ExampleFormTwo() {
                 }}
                 placeholder="Select an option"
                 className="w-full py-2 pl-3 pr-10 text-sm border border-gray-300 rounded-md h-11 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-              />
+              /> */}
               <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
                 <CalenderIcon />
               </span>
