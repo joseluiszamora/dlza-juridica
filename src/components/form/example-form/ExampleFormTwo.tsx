@@ -9,8 +9,6 @@ import Form from "../Form";
 import { CalenderIcon } from "../../../icons";
 import Button from "../../ui/button/Button";
 
-import "flatpickr/dist/themes/light.css";
-
 export default function ExampleFormTwo() {
   const [selectedOption, setSelectedOption] = useState<string>("Free");
   // const [dateOfBirth, setDateOfBirth] = useState("");
