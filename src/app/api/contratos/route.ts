@@ -20,6 +20,7 @@ export async function GET(req: Request) {
     where["title"] = title!;
   }
 
+  console.log('skip:', skip)
   console.log('where:', where)
 
   try {
