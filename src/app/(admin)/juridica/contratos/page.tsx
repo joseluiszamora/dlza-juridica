@@ -11,6 +11,7 @@ import ContratosTableHeader from "./components/TableHeader";
 import Contrato from "@/data/Contrato";
 import ContratoListItem from "./components/TableItem";
 import BuscarContrato from "./components/BuscarContrato";
+import AgregarDocumento from "./components/AgregarDocumento";
 
 export default function Contratos() {
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,7 @@ export default function Contratos() {
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
       <NuevoContrato onSave={getData} />
       <BuscarContrato />
+      <AgregarDocumento />
       </div>
       
     </div>
