@@ -1,91 +1,285 @@
-"use client";
-import ComponentCard from "@/components/common/ComponentCard";
-import React from "react";
-import { useDropzone } from "react-dropzone";
+import React, { useState, useCallback } from 'react';
+import { useDropzone, Accept } from 'react-dropzone';
+import Image from 'next/image';
 
-const DropzoneContratos: React.FC = () => {
-  const onDrop = (acceptedFiles: File[]) => {
-    console.log("Files dropped:", acceptedFiles);
-    // Handle file uploads here
+// Tipos para el preview del archivo
+type FilePreviewType = 
+  | { type: 'image'; url: string }
+  | { type: 'pdf' | 'word' | 'excel' | 'document'; name: string; size: string };
+
+// Interfaz para las props del componente
+interface FileUploadFormProps {
+  maxFileSize?: number; // en bytes
+  onUploadSuccess?: (data: unknown) => void;
+  apiEndpoint?: string;
+}
+
+export default function DropzoneContratos({
+  maxFileSize = 10 * 1024 * 1024, // 10MB por defecto
+  onUploadSuccess,
+  apiEndpoint = '/api/upload',
+}: FileUploadFormProps) {
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<FilePreviewType | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+
+  // Tipos de archivos aceptados
+  const acceptedFileTypes: Accept = {
+    'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp'],
+    'application/pdf': ['.pdf'],
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    'application/msword': ['.doc'],
+    'application/vnd.ms-excel': ['.xls']
   };
 
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "image/png": [],
-      "image/jpeg": [],
-      "image/webp": [],
-      "aplication/pdf": [],
-      "application/msword": [],
+  // Función para manejar el drop de archivos
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles?.length) {
+      const selectedFile = acceptedFiles[0];
+      setFile(selectedFile);
+      
+      // Crear preview dependiendo del tipo de archivo
+      if (selectedFile.type.startsWith('image/')) {
+        const objectUrl = URL.createObjectURL(selectedFile);
+        setPreview({
+          type: 'image',
+          url: objectUrl
+        });
+      } else {
+        // Para documentos no imagen, mostramos un icono específico
+        const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase() || '';
+        let fileType: 'pdf' | 'word' | 'excel' | 'document' = 'document';
+        
+        if (fileExtension === 'pdf') {
+          fileType = 'pdf';
+        } else if (['doc', 'docx'].includes(fileExtension)) {
+          fileType = 'word';
+        } else if (['xls', 'xlsx'].includes(fileExtension)) {
+          fileType = 'excel';
+        }
+        
+        setPreview({
+          type: fileType,
+          name: selectedFile.name,
+          size: formatFileSize(selectedFile.size)
+        });
+      }
+    }
+  }, []);
 
-    },
+  // Configuración de Dropzone
+  const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
+    onDrop,
+    accept: acceptedFileTypes,
+    maxFiles: 1,
+    maxSize: maxFileSize,
   });
 
-  const files = acceptedFiles.map(file => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
-  ));
+  // Formatear tamaño de archivo para mostrar
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // Función para subir el archivo
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!file || !title) {
+      setUploadError('Por favor, añade un título y selecciona un archivo.');
+      return;
+    }
+    
+    setUploading(true);
+    setUploadError(null);
+    setUploadSuccess(false);
+    
+    try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('file', file);
+      
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al subir el archivo');
+      }
+      
+      const data = await response.json();
+      console.log('Archivo subido correctamente:', data);
+      
+      // Limpiar formulario después de éxito
+      setUploadSuccess(true);
+      setTitle('');
+      setDescription('');
+      setFile(null);
+      setPreview(null);
+      
+      // Llamar al callback si existe
+      if (onUploadSuccess) {
+        onUploadSuccess(data);
+      }
+      
+    } catch (error) {
+      console.error('Error:', error);
+      setUploadError(error instanceof Error ? error.message : 'Ha ocurrido un error al subir el archivo');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Componente para renderizar la previsualización según el tipo
+  const FilePreview = () => {
+    if (!preview) return null;
+    
+    if (preview.type === 'image') {
+      return (
+        <div className="relative h-48 w-full">
+          <Image 
+            src={preview.url} 
+            alt="Vista previa" 
+            fill 
+            sizes="(max-width: 768px) 100vw, 300px"
+            className="object-contain rounded-md" 
+          />
+        </div>
+      );
+    }
+    
+    // Iconos y previews para otros tipos de documentos
+    const iconMap: Record<string, string> = {
+      'pdf': '📄',
+      'word': '📝',
+      'excel': '📊',
+      'document': '📃'
+    };
+    
+    return (
+      <div className="flex items-center p-4 border rounded-md bg-gray-50">
+        <span className="text-3xl mr-3">{iconMap[preview.type]}</span>
+        <div>
+          <p className="font-medium truncate">{preview.name}</p>
+          <p className="text-sm text-gray-500">{preview.size}</p>
+        </div>
+      </div>
+    );
+  };
+
+  // Limpiar URL de objeto al desmontar componente
+  React.useEffect(() => {
+    return () => {
+      if (preview?.type === 'image') {
+        URL.revokeObjectURL(preview.url);
+      }
+    };
+  }, [preview]);
 
   return (
-    <ComponentCard title="Documento Adjunto">
-      <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
-        <form
-          {...getRootProps()}
-          className={`dropzone rounded-xl   border-dashed border-gray-300 p-7 lg:p-10
-        ${
-          isDragActive
-            ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
-            : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
-        }
-      `}
-          id="demo-upload"
-        >
-          {/* Hidden Input */}
-          <input {...getInputProps()} />
-
-          <div className="dz-message flex flex-col items-center m-0!">
-            {/* Icon Container */}
-            <div className="mb-[22px] flex justify-center">
-              <div className="flex h-[68px] w-[68px]  items-center justify-center rounded-full bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
-                <svg
-                  className="fill-current"
-                  width="29"
-                  height="28"
-                  viewBox="0 0 29 28"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M14.5019 3.91699C14.2852 3.91699 14.0899 4.00891 13.953 4.15589L8.57363 9.53186C8.28065 9.82466 8.2805 10.2995 8.5733 10.5925C8.8661 10.8855 9.34097 10.8857 9.63396 10.5929L13.7519 6.47752V18.667C13.7519 19.0812 14.0877 19.417 14.5019 19.417C14.9161 19.417 15.2519 19.0812 15.2519 18.667V6.48234L19.3653 10.5929C19.6583 10.8857 20.1332 10.8855 20.426 10.5925C20.7188 10.2995 20.7186 9.82463 20.4256 9.53184L15.0838 4.19378C14.9463 4.02488 14.7367 3.91699 14.5019 3.91699ZM5.91626 18.667C5.91626 18.2528 5.58047 17.917 5.16626 17.917C4.75205 17.917 4.41626 18.2528 4.41626 18.667V21.8337C4.41626 23.0763 5.42362 24.0837 6.66626 24.0837H22.3339C23.5766 24.0837 24.5839 23.0763 24.5839 21.8337V18.667C24.5839 18.2528 24.2482 17.917 23.8339 17.917C23.4197 17.917 23.0839 18.2528 23.0839 18.667V21.8337C23.0839 22.2479 22.7482 22.5837 22.3339 22.5837H6.66626C6.25205 22.5837 5.91626 22.2479 5.91626 21.8337V18.667Z"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Text Content */}
-            <h4 className="mb-3 font-semibold text-gray-800 text-theme-xl dark:text-white/90">
-              {isDragActive ? "Drop Files Here" : "Drag & Drop Files Here"}
-            </h4>
-
-            <span className=" text-center mb-5 block w-full max-w-[290px] text-sm text-gray-700 dark:text-gray-400">
-              Drag and drop your PNG, JPG, WebP, SVG images here or browse
-            </span>
-
-            <span className="font-medium underline text-theme-sm text-brand-500">
-              Browse File
-            </span>
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center">Subir ArchivoX2</h2>
+      
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+            Título *
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        
+        <div className="mb-5">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+            Descripción
+          </label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        
+        <div className="mb-5">
+          <p className="block text-sm font-medium text-gray-700 mb-1">
+            Archivo *
+          </p>
+          <div 
+            {...getRootProps()} 
+            className={`border-2 border-dashed rounded-md p-6 flex flex-col items-center cursor-pointer transition-colors ${
+              isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-blue-400'
+            }`}
+          >
+            <input {...getInputProps()} />
+            
+            {!file ? (
+              <>
+                <div className="text-4xl mb-2">📂</div>
+                <p className="text-center text-gray-600">
+                  {isDragActive 
+                    ? 'Suelta el archivo aquí' 
+                    : 'Arrastra y suelta un archivo aquí, o haz clic para seleccionarlo'
+                  }
+                </p>
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  Formatos permitidos: JPG, PNG, GIF, PDF, DOC, DOCX, XLS, XLSX (máx. {formatFileSize(maxFileSize)})
+                </p>
+              </>
+            ) : (
+              <FilePreview />
+            )}
           </div>
-        </form>
-
-        <aside>
-          <h4>Files</h4>
-          <ul>{files}</ul>
-        </aside>
-      </div>
-    </ComponentCard>
+          
+          {fileRejections.length > 0 && (
+            <p className="mt-2 text-sm text-red-600">
+              {fileRejections[0]?.errors[0]?.message || 'Archivo no válido.'}
+            </p>
+          )}
+        </div>
+        
+        {uploadError && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+            {uploadError}
+          </div>
+        )}
+        
+        {uploadSuccess && (
+          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md text-sm">
+            ¡Archivo subido con éxito!
+          </div>
+        )}
+        
+        <button
+          type="submit"
+          disabled={uploading}
+          className={`w-full py-2 px-4 rounded-md text-white font-medium ${
+            uploading 
+              ? 'bg-blue-400 cursor-not-allowed' 
+              : 'bg-blue-600 hover:bg-blue-700'
+          }`}
+        >
+          {uploading ? 'Subiendo...' : 'Subir Archivo'}
+        </button>
+      </form>
+    </div>
   );
-};
-
-export default DropzoneContratos;
+}
