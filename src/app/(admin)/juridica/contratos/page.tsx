@@ -30,7 +30,6 @@ export default function Contratos() {
       .then((data) => {
         setLoading(false);
         setContratos(data.data);
-        console.log("###############");
         console.log(data);
       });
   };

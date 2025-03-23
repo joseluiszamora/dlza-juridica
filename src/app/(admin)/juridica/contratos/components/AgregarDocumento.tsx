@@ -3,37 +3,14 @@ import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { PlusIcon } from "@/icons";
 import { useModal } from "@/hooks/useModal";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import DropzoneContratos from "./DropZoneContratos";
 
-type Inputs = {
-  title: string;
-  desc: string;
-};
 
 
-const AgregarDocumento: React.FC = () => {
+export default function AgregarDocumento() {
   const { isOpen, openModal, closeModal } = useModal();
-  const [loading, setLoading] = useState(false);
-
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: {
-      // nacimiento: new Date() || null,
-    },
-  });
-
-  const onSubmit: SubmitHandler<Inputs> = async () => {
-    setLoading(true);
-    setLoading(false);
-  };
-
-  const inputStyle = "dark:bg-dark-900 h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800";
+  
+  // const inputStyle = "dark:bg-dark-900 h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800";
 
 
   return(<>
@@ -54,7 +31,9 @@ const AgregarDocumento: React.FC = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-1">
+        <DropzoneContratos  />*
+
+        {/* <form onSubmit={handleSubmit(onSubmit)} className="mt-1">
           <div className="mt-6">
             {fieldTitle('Titulo del documento')}
             <div className="relative">
@@ -90,20 +69,18 @@ const AgregarDocumento: React.FC = () => {
           </div>
 
           <div className="mt-6">
-            <DropzoneContratos  />
+            <DropzoneContratos  />*
           </div>
 
-        </form>
+        </form> */}
       </div>
 
     </Modal>
   </>);
 
-function fieldTitle(name: string) {
-  return <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-    {name}
-  </label>;
+  // function fieldTitle(name: string) {
+  //   return <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+  //     {name}
+  //   </label>;
+  // }
 }
-}
-
-export default AgregarDocumento;

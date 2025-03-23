@@ -108,10 +108,14 @@ export default function DropzoneContratos({
       formData.append('description', description);
       formData.append('file', file);
       
+      console.log('Subiendo archivo:', formData);
+      
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         body: formData,
       });
+
+      console.log('Respuesta:', response);
       
       if (!response.ok) {
         const errorData = await response.json();
