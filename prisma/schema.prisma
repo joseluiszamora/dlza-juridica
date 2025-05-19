@@ -30,3 +30,30 @@ model Contract {
   status     String   @default("Active")
   bajaLogica Boolean  @default(false)
 }
+
+model Agencia {
+  id                             Int       @id @default(autoincrement())
+  created_at                     DateTime  @default(now()) @db.Timestamptz(6)
+  nombre                         String?   @default("")
+  agente                         String?   @default("")
+  direccion                      String?   @default("")
+  ciudad                         String?
+  latitud                        Float?    @db.Real
+  longitud                       Float?    @db.Real
+  ci                             Boolean?
+  croquis                        Boolean?
+  facturaServicioBasico          Boolean?
+  nit                            Boolean?
+  licenciaDeFuncionamiento       Boolean?
+  vigenciaLicenciaFuncionamiento DateTime? @db.Date
+  nitAgencia                     String?
+  tipoGarantia                   String?
+  montoGarantia                  Float?    @db.Real
+  testimonioNotarial             String?
+  contratoAlquiler               String?
+  contratoAgenciaInicio          DateTime? @db.Date
+  contratoAgenciaFin             DateTime? @db.Date
+  ruat                           Boolean?
+  observaciones                  String?
+  contratoHasta                  String?
+}
