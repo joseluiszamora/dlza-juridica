@@ -1,11 +1,12 @@
-import Button from "@/components/ui/button/Button";
 import { TableRow, TableCell } from "@/components/ui/table";
 import Ciudad from "@/data/Ciudad";
-import { PencilIcon } from "@/icons";
+import EditarCiudad from "./EditarCiudad";
 
 interface Props {
   ciudad: Ciudad;
+  onChange: () => void;
 }
+
 
 const CiudadListItem: React.FC<Props> = (props) => {
   return (
@@ -14,12 +15,10 @@ const CiudadListItem: React.FC<Props> = (props) => {
       {props.ciudad.nombre}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-      {props.ciudad.pais}
+      {props.ciudad.pais?.toUpperCase()}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-      <Button size="sm" variant="primary" startIcon={<PencilIcon />}>
-        Editar
-      </Button>
+      <EditarCiudad ciudad={props.ciudad} onSave={props.onChange} />
     </TableCell>
   </TableRow>
   );

@@ -9,6 +9,7 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import CiudadListItem from "./components/TableItem";
 import CiudadTableHeader from "./components/TableHeader";
 import BuscarCiudad from "./components/BuscarCiudad";
+import NuevaCiudad from "./components/NuevaCiudad";
 
 export default function Ciudades() {
   const [loading, setLoading] = useState(false);
@@ -50,7 +51,7 @@ export default function Ciudades() {
   };
 
   const files = ciudades.map((element: Ciudad) => (
-    <CiudadListItem ciudad={element} key={element.id} />
+    <CiudadListItem ciudad={element} key={element.id} onChange={getData} />
   ));
 
   return(
@@ -61,6 +62,7 @@ export default function Ciudades() {
     <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 xl:p-5 dark:bg-white/[0.03] mb-5">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <BuscarCiudad onSearch={handleSearch} />
+        <NuevaCiudad onSave={getData} />
       {/* <NuevoContrato onSave={getData} />
       <AgregarDocumento /> */}
       </div>
