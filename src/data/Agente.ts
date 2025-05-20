@@ -15,6 +15,9 @@ export default class Agente {
   created_at: Date;
   activo: boolean | null;
   imagenUrl: string | null;
+  documentoCi: boolean | null;
+  documentoCroquis: boolean | null;
+  documentoServicioBasico: boolean | null;
   agencias?: Agencia[];
 
   constructor(
@@ -31,6 +34,9 @@ export default class Agente {
     email: string | null = "",
     activo: boolean | null = true,
     imagenUrl: string | null = null,
+    documentoCi: boolean | null = false,
+    documentoCroquis: boolean | null = false,
+    documentoServicioBasico: boolean | null = false,
     created_at: Date = new Date(),
     agencias: Agencia[] = []
   ) {
@@ -48,6 +54,9 @@ export default class Agente {
     this.created_at = created_at;
     this.activo = activo;
     this.imagenUrl = imagenUrl;
+    this.documentoCi = documentoCi;
+    this.documentoCroquis = documentoCroquis;
+    this.documentoServicioBasico = documentoServicioBasico;
     this.agencias = agencias;
   }
 }

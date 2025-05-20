@@ -26,6 +26,12 @@ export default function AgenteTableHeader() {
           isHeader
           className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
         >
+          Documentos
+        </TableCell>
+        <TableCell
+          isHeader
+          className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+        >
           Estado
         </TableCell>
         <TableCell

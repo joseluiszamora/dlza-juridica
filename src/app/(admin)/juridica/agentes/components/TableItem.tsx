@@ -1,7 +1,7 @@
 import Button from "@/components/ui/button/Button";
 import { TableRow, TableCell } from "@/components/ui/table";
 import Agente from "@/data/Agente";
-import { TrashBinIcon, FileIcon } from "@/icons";
+import { TrashBinIcon, ImageIcon, XIcon, CheckLineIcon } from "@/icons";
 import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
@@ -51,7 +51,7 @@ const AgenteListItem: React.FC<Props> = ({ agente, onChange, onDelete }) => {
               />
             ) : (
               <div className="flex items-center justify-center w-full h-full text-gray-400">
-                <FileIcon className="w-5 h-5" />
+                <ImageIcon className="w-5 h-5" />
               </div>
             )}
           </div>
@@ -72,6 +72,43 @@ const AgenteListItem: React.FC<Props> = ({ agente, onChange, onDelete }) => {
       </TableCell>
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
         {agente.celular}
+      </TableCell>
+      {/* Nueva columna para documentos */}
+      <TableCell className="px-4 py-3 text-start text-theme-sm">
+        <div className="flex space-x-2">
+          <span 
+            className="inline-flex items-center rounded-full px-2 py-1 text-xs text-gray-500 dark:text-gray-400" 
+            title="Carnet de Identidad"
+          >
+            CI
+            {agente.documentoCi ? 
+              <CheckLineIcon className="w-4 h-4 ml-1 text-success-500" /> : 
+              <XIcon className="w-4 h-4 ml-1 text-error-500" />
+            }
+          </span>
+          
+          <span 
+            className="inline-flex items-center rounded-full px-2 py-1 text-xs text-gray-500 dark:text-gray-400" 
+            title="Croquis"
+          >
+            CR
+            {agente.documentoCroquis ? 
+              <CheckLineIcon className="w-4 h-4 ml-1 text-success-500" /> : 
+              <XIcon className="w-4 h-4 ml-1 text-error-500" />
+            }
+          </span>
+          
+          <span 
+            className="inline-flex items-center rounded-full px-2 py-1 text-xs text-gray-500 dark:text-gray-400" 
+            title="Factura Servicio Básico"
+          >
+            FB
+            {agente.documentoServicioBasico ? 
+              <CheckLineIcon className="w-4 h-4 ml-1 text-success-500" /> : 
+              <XIcon className="w-4 h-4 ml-1 text-error-500" />
+            }
+          </span>
+        </div>
       </TableCell>
       <TableCell className="px-4 py-3 text-start text-theme-sm">
         <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${

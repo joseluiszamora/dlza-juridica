@@ -53,6 +53,9 @@ import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
 import LoadingIcon from "./loading.svg";
 import SearchIcon from "./search.svg";
+import ImageIcon from "./image.svg";
+import CheckIcon from "./check.svg";
+import XIcon from "./x.svg";
 
 export {
   DownloadIcon,
@@ -109,5 +112,8 @@ export {
   ChevronUpIcon,
   ChatIcon,
   LoadingIcon,
-  SearchIcon
+  SearchIcon,
+  ImageIcon,
+  CheckIcon,
+  XIcon
 };

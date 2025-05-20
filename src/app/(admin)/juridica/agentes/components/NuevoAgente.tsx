@@ -36,6 +36,9 @@ const NuevoAgente: React.FC<Props> = ({ onSave }) => {
   const [activo, setActivo] = useState(true);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [documentoCi, setDocumentoCi] = useState(false);
+  const [documentoCroquis, setDocumentoCroquis] = useState(false);
+  const [documentoServicioBasico, setDocumentoServicioBasico] = useState(false);
   // const { toast } = useToast();
 
   const {
@@ -145,7 +148,10 @@ const NuevoAgente: React.FC<Props> = ({ onSave }) => {
           celular: data.celular,
           email: data.email || "",
           activo: activo,
-          imagenUrl: imagenUrl
+          imagenUrl: imagenUrl,
+          documentoCi: documentoCi,
+          documentoCroquis: documentoCroquis,
+          documentoServicioBasico: documentoServicioBasico
         }),
       });
 
@@ -418,6 +424,54 @@ const NuevoAgente: React.FC<Props> = ({ onSave }) => {
                   {...register("direccion")}
                   className={`${inputStyle} dark:border-gray-700 border-gray-300`}
                 />
+              </div>
+            </div>
+
+            {/* Sección de documentación */}
+            <div className="mt-5">
+              <h6 className="mb-3 font-medium text-gray-700 dark:text-gray-300">
+                Documentación
+              </h6>
+              
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="flex items-center">
+                  <input
+                    id="documentoCi"
+                    type="checkbox"
+                    checked={documentoCi}
+                    onChange={(e) => setDocumentoCi(e.target.checked)}
+                    className="w-4 h-4 text-brand-500 border-gray-300 rounded focus:ring-brand-500"
+                  />
+                  <label htmlFor="documentoCi" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Carnet de Identidad
+                  </label>
+                </div>
+                
+                <div className="flex items-center">
+                  <input
+                    id="documentoCroquis"
+                    type="checkbox"
+                    checked={documentoCroquis}
+                    onChange={(e) => setDocumentoCroquis(e.target.checked)}
+                    className="w-4 h-4 text-brand-500 border-gray-300 rounded focus:ring-brand-500"
+                  />
+                  <label htmlFor="documentoCroquis" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Croquis
+                  </label>
+                </div>
+                
+                <div className="flex items-center">
+                  <input
+                    id="documentoServicioBasico"
+                    type="checkbox"
+                    checked={documentoServicioBasico}
+                    onChange={(e) => setDocumentoServicioBasico(e.target.checked)}
+                    className="w-4 h-4 text-brand-500 border-gray-300 rounded focus:ring-brand-500"
+                  />
+                  <label htmlFor="documentoServicioBasico" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Factura Servicio Básico
+                  </label>
+                </div>
               </div>
             </div>
 

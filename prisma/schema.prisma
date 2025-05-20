@@ -43,9 +43,6 @@ model Agencia {
   ciudad                         Ciudad    @relation(fields: [ciudadId], references: [id])
   latitud                        Float?    @db.Real
   longitud                       Float?    @db.Real
-  ci                             Boolean?
-  croquis                        Boolean?
-  facturaServicioBasico          Boolean?
   nit                            Boolean?
   licenciaDeFuncionamiento       Boolean?
   vigenciaLicenciaFuncionamiento DateTime? @db.Date
@@ -62,21 +59,24 @@ model Agencia {
 }
 
 model Agente {
-  id              Int       @id @default(autoincrement())
-  nombres         String
-  apellidos       String
-  documento       String
-  expedido        String
-  fechaNacimiento DateTime  @db.Date
-  genero          String
-  direccion       String?   @default("")
-  telefono        String?   @default("")
-  celular         String
-  email           String?   @default("")
-  created_at      DateTime  @default(now()) @db.Timestamptz(6)
-  activo          Boolean?  @default(true)
-  imagenUrl       String?
-  agencias        Agencia[]
+  id                      Int       @id @default(autoincrement())
+  nombres                 String
+  apellidos               String
+  documento               String
+  expedido                String
+  fechaNacimiento         DateTime  @db.Date
+  genero                  String
+  direccion               String?   @default("")
+  telefono                String?   @default("")
+  celular                 String
+  email                   String?   @default("")
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
+  activo                  Boolean?  @default(true)
+  imagenUrl               String?
+  documentoCi             Boolean?  @default(false)
+  documentoCroquis        Boolean?  @default(false)
+  documentoServicioBasico Boolean?  @default(false)
+  agencias                Agencia[]
 }
 
 model Ciudad {

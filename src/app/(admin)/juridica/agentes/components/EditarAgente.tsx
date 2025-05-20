@@ -40,6 +40,9 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
   const [activo, setActivo] = useState(agente.activo !== false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(agente.imagenUrl || null);
+  const [documentoCi, setDocumentoCi] = useState(agente.documentoCi === true);
+  const [documentoCroquis, setDocumentoCroquis] = useState(agente.documentoCroquis === true);
+  const [documentoServicioBasico, setDocumentoServicioBasico] = useState(agente.documentoServicioBasico === true);
   // const { toast } = useToast();
   
   const {
@@ -76,6 +79,9 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
     setGenero(agente.genero || "Masculino");
     setFechaNacimiento(agente.fechaNacimiento ? new Date(agente.fechaNacimiento) : new Date());
     setActivo(agente.activo !== false);
+    setDocumentoCi(agente.documentoCi === true);
+    setDocumentoCroquis(agente.documentoCroquis === true);
+    setDocumentoServicioBasico(agente.documentoServicioBasico === true);
   }, [agente, reset]);
 
   // Actualizar preview cuando cambia el agente
@@ -189,7 +195,10 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
           celular: data.celular,
           email: data.email || "",
           activo: activo,
-          imagenUrl: imagenUrl
+          imagenUrl: imagenUrl,
+          documentoCi: documentoCi,
+          documentoCroquis: documentoCroquis,
+          documentoServicioBasico: documentoServicioBasico
         }),
       });
 
@@ -463,6 +472,54 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
                   {...register("direccion")}
                   className={`${inputStyle} dark:border-gray-700 border-gray-300`}
                 />
+              </div>
+            </div>
+
+            {/* Sección de documentación */}
+            <div className="mt-5">
+              <h6 className="mb-3 font-medium text-gray-700 dark:text-gray-300">
+                Documentación
+              </h6>
+              
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="flex items-center">
+                  <input
+                    id="documentoCi-edit"
+                    type="checkbox"
+                    checked={documentoCi}
+                    onChange={(e) => setDocumentoCi(e.target.checked)}
+                    className="w-4 h-4 text-brand-500 border-gray-300 rounded focus:ring-brand-500"
+                  />
+                  <label htmlFor="documentoCi-edit" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Carnet de Identidad
+                  </label>
+                </div>
+                
+                <div className="flex items-center">
+                  <input
+                    id="documentoCroquis-edit"
+                    type="checkbox"
+                    checked={documentoCroquis}
+                    onChange={(e) => setDocumentoCroquis(e.target.checked)}
+                    className="w-4 h-4 text-brand-500 border-gray-300 rounded focus:ring-brand-500"
+                  />
+                  <label htmlFor="documentoCroquis-edit" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Croquis
+                  </label>
+                </div>
+                
+                <div className="flex items-center">
+                  <input
+                    id="documentoServicioBasico-edit"
+                    type="checkbox"
+                    checked={documentoServicioBasico}
+                    onChange={(e) => setDocumentoServicioBasico(e.target.checked)}
+                    className="w-4 h-4 text-brand-500 border-gray-300 rounded focus:ring-brand-500"
+                  />
+                  <label htmlFor="documentoServicioBasico-edit" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Factura Servicio Básico
+                  </label>
+                </div>
               </div>
             </div>
 
