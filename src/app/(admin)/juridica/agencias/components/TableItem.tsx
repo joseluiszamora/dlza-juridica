@@ -24,10 +24,10 @@ const AgenciaListItem: React.FC<Props> = (props) => {
         </div>
         <div>
           <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-            Erwin
+            {props.agencia.agente?.nombres} 
           </span>
           <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-            Saavedra
+            {props.agencia.agente?.apellidos} 
           </span>
         </div>
       </div>
@@ -36,19 +36,16 @@ const AgenciaListItem: React.FC<Props> = (props) => {
       {props.agencia.nombre}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-      {props.agencia.agente}
-    </TableCell>
-    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
       {props.agencia.direccion}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
       {props.agencia.montoGarantia}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-      {format(props.agencia.contratoAgenciaInicio, 'dd/MM/yyyy', { locale: es })}
+      {props.agencia.contratoAgenciaFin ? format(props.agencia.contratoAgenciaFin, 'dd/MM/yyyy', { locale: es }) : '-'}
     </TableCell>
     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-      {format(props.agencia.contratoAgenciaFin, 'dd/MM/yyyy', { locale: es })}
+      {props.agencia.contratoAgenciaFin ? format(props.agencia.contratoAgenciaFin, 'dd/MM/yyyy', { locale: es }) : '-'}
     </TableCell>
   </TableRow>
   );

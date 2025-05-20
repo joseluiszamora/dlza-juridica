@@ -35,9 +35,12 @@ model Agencia {
   id                             Int       @id @default(autoincrement())
   created_at                     DateTime  @default(now()) @db.Timestamptz(6)
   nombre                         String?   @default("")
-  agente                         String?   @default("")
+  agenteNombre                   String?   @default("")
+  agenteId                       Int       @default(1)
+  agente                         Agente    @relation(fields: [agenteId], references: [id])
   direccion                      String?   @default("")
-  ciudad                         String?
+  ciudadId                       Int       @default(1)
+  ciudad                         Ciudad    @relation(fields: [ciudadId], references: [id])
   latitud                        Float?    @db.Real
   longitud                       Float?    @db.Real
   ci                             Boolean?
@@ -56,4 +59,29 @@ model Agencia {
   ruat                           Boolean?
   observaciones                  String?
   contratoHasta                  String?
+}
+
+model Agente {
+  id              Int       @id @default(autoincrement())
+  nombres         String
+  apellidos       String
+  documento       String
+  expedido        String
+  fechaNacimiento DateTime  @db.Date
+  genero          String
+  direccion       String?   @default("")
+  telefono        String?   @default("")
+  celular         String
+  email           String?   @default("")
+  created_at      DateTime  @default(now()) @db.Timestamptz(6)
+  activo          Boolean?  @default(true)
+  agencias        Agencia[]
+}
+
+model Ciudad {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  pais      String   @default("Bolivia")
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  agencias  Agencia[]
 }
