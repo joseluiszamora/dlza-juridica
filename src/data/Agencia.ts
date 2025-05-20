@@ -1,9 +1,8 @@
-import Agente from './Agente';
-import Ciudad from './Ciudad';
+import Agente from "./Agente";
+import Ciudad from "./Ciudad";
 
 export default class Agencia {
   id: number;
-  created_at: Date;
   nombre: string | null;
   agenteNombre: string | null;
   agenteId: number;
@@ -13,10 +12,6 @@ export default class Agencia {
   ciudad?: Ciudad;
   latitud: number | null;
   longitud: number | null;
-  ci: boolean | null;
-  croquis: boolean | null;
-  facturaServicioBasico: boolean | null;
-  nit: boolean | null;
   licenciaDeFuncionamiento: boolean | null;
   vigenciaLicenciaFuncionamiento: Date | null;
   nitAgencia: string | null;
@@ -26,9 +21,8 @@ export default class Agencia {
   contratoAlquiler: string | null;
   contratoAgenciaInicio: Date | null;
   contratoAgenciaFin: Date | null;
-  ruat: boolean | null;
   observaciones: string | null;
-  contratoHasta: string | null;
+  created_at: Date;
 
   constructor(
     id: number,
@@ -41,10 +35,6 @@ export default class Agencia {
     ciudad?: Ciudad,
     latitud: number | null = null,
     longitud: number | null = null,
-    ci: boolean | null = null,
-    croquis: boolean | null = null,
-    facturaServicioBasico: boolean | null = null,
-    nit: boolean | null = null,
     licenciaDeFuncionamiento: boolean | null = null,
     vigenciaLicenciaFuncionamiento: Date | null = null,
     nitAgencia: string | null = null,
@@ -54,9 +44,7 @@ export default class Agencia {
     contratoAlquiler: string | null = null,
     contratoAgenciaInicio: Date | null = null,
     contratoAgenciaFin: Date | null = null,
-    ruat: boolean | null = null,
     observaciones: string | null = null,
-    contratoHasta: string | null = null,
     created_at: Date = new Date()
   ) {
     this.id = id;
@@ -69,10 +57,6 @@ export default class Agencia {
     this.ciudad = ciudad;
     this.latitud = latitud;
     this.longitud = longitud;
-    this.ci = ci;
-    this.croquis = croquis;
-    this.facturaServicioBasico = facturaServicioBasico;
-    this.nit = nit;
     this.licenciaDeFuncionamiento = licenciaDeFuncionamiento;
     this.vigenciaLicenciaFuncionamiento = vigenciaLicenciaFuncionamiento;
     this.nitAgencia = nitAgencia;
@@ -82,9 +66,7 @@ export default class Agencia {
     this.contratoAlquiler = contratoAlquiler;
     this.contratoAgenciaInicio = contratoAgenciaInicio;
     this.contratoAgenciaFin = contratoAgenciaFin;
-    this.ruat = ruat;
     this.observaciones = observaciones;
-    this.contratoHasta = contratoHasta;
     this.created_at = created_at;
   }
 }

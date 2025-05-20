@@ -33,7 +33,6 @@ model Contract {
 
 model Agencia {
   id                             Int       @id @default(autoincrement())
-  created_at                     DateTime  @default(now()) @db.Timestamptz(6)
   nombre                         String?   @default("")
   agenteNombre                   String?   @default("")
   agenteId                       Int       @default(1)
@@ -43,7 +42,6 @@ model Agencia {
   ciudad                         Ciudad    @relation(fields: [ciudadId], references: [id])
   latitud                        Float?    @db.Real
   longitud                       Float?    @db.Real
-  nit                            Boolean?
   licenciaDeFuncionamiento       Boolean?
   vigenciaLicenciaFuncionamiento DateTime? @db.Date
   nitAgencia                     String?
@@ -53,9 +51,8 @@ model Agencia {
   contratoAlquiler               String?
   contratoAgenciaInicio          DateTime? @db.Date
   contratoAgenciaFin             DateTime? @db.Date
-  ruat                           Boolean?
   observaciones                  String?
-  contratoHasta                  String?
+  created_at                     DateTime  @default(now()) @db.Timestamptz(6)
 }
 
 model Agente {

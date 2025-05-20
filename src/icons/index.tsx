@@ -56,6 +56,7 @@ import SearchIcon from "./search.svg";
 import ImageIcon from "./image.svg";
 import CheckIcon from "./check.svg";
 import XIcon from "./x.svg";
+import MapIcon from "./map.svg";
 
 export {
   DownloadIcon,
@@ -115,5 +116,6 @@ export {
   SearchIcon,
   ImageIcon,
   CheckIcon,
-  XIcon
+  XIcon,
+  MapIcon
 };
