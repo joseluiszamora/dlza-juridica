@@ -11,12 +11,27 @@ import CiudadTableHeader from "./components/TableHeader";
 import BuscarCiudad from "./components/BuscarCiudad";
 
 export default function Ciudades() {
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [ciudades, setCiudades] = useState([] as Array<Ciudad>);
+  const [allCiudades, setAllCiudades] = useState([] as Array<Ciudad>);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    // Filtrar ciudades cuando cambia el término de búsqueda
+    if (searchTerm.trim() === "") {
+      setCiudades(allCiudades);
+    } else {
+      const filteredCiudades = allCiudades.filter(ciudad => 
+        ciudad.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ciudad.pais?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setCiudades(filteredCiudades);
+    }
+  }, [searchTerm, allCiudades]);
 
   const getData = () => {
     setLoading(true);
@@ -25,8 +40,13 @@ const [loading, setLoading] = useState(false);
       .then((data) => {
         setLoading(false);
         setCiudades(data.data);
+        setAllCiudades(data.data);
         console.log(data);
       });
+  };
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
   };
 
   const files = ciudades.map((element: Ciudad) => (
@@ -40,9 +60,8 @@ const [loading, setLoading] = useState(false);
     {/* Form Nuevo Contrato && search Contrato */}
     <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 xl:p-5 dark:bg-white/[0.03] mb-5">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <BuscarCiudad />
+        <BuscarCiudad onSearch={handleSearch} />
       {/* <NuevoContrato onSave={getData} />
-      <BuscarContrato />
       <AgregarDocumento /> */}
       </div>
       
@@ -52,7 +71,7 @@ const [loading, setLoading] = useState(false);
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[1102px]">
           
-            {!loading && 
+            {!loading && ciudades.length > 0 && 
             <Table>
               {/* Table Header */}
               <CiudadTableHeader />
@@ -62,6 +81,11 @@ const [loading, setLoading] = useState(false);
               {files}
               </TableBody>
             </Table>
+            }
+            {!loading && ciudades.length === 0 && 
+              <div className="flex items-center justify-center h-32">
+                <p className="text-gray-500 dark:text-gray-400">No se encontraron ciudades</p>
+              </div>
             }
             {loading && (
               <div className="flex items-center justify-center h-32">
