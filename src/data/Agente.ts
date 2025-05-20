@@ -14,6 +14,7 @@ export default class Agente {
   email: string | null;
   created_at: Date;
   activo: boolean | null;
+  imagenUrl: string | null;
   agencias?: Agencia[];
 
   constructor(
@@ -29,6 +30,7 @@ export default class Agente {
     telefono: string | null = "",
     email: string | null = "",
     activo: boolean | null = true,
+    imagenUrl: string | null = null,
     created_at: Date = new Date(),
     agencias: Agencia[] = []
   ) {
@@ -45,6 +47,7 @@ export default class Agente {
     this.email = email;
     this.created_at = created_at;
     this.activo = activo;
+    this.imagenUrl = imagenUrl;
     this.agencias = agencias;
   }
 }

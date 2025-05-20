@@ -4,11 +4,14 @@ import { SpinnerLoader } from "@/components/ui/loader/loaders";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { ChevronDownIcon, PencilIcon } from "@/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Select from "@/components/form/Select";
 import Agente from "@/data/Agente";
 import DatePicker from "@/components/form/DatePicker";
+// import { useToast } from "@/hooks/useToast";
+import { uploadImageToSupabase } from "@/services/supabaseClient";
+import { FileIcon } from "@/icons";
 
 type Inputs = {
   nombres: string;
@@ -35,7 +38,10 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
     agente.fechaNacimiento ? new Date(agente.fechaNacimiento) : new Date()
   );
   const [activo, setActivo] = useState(agente.activo !== false);
-
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(agente.imagenUrl || null);
+  // const { toast } = useToast();
+  
   const {
     register,
     handleSubmit,
@@ -72,6 +78,11 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
     setActivo(agente.activo !== false);
   }, [agente, reset]);
 
+  // Actualizar preview cuando cambia el agente
+  useEffect(() => {
+    setPreviewUrl(agente.imagenUrl || null);
+  }, [agente]);
+
   const optionsExpedido = [
     { value: "La Paz", label: "La Paz" },
     { value: "Santa Cruz", label: "Santa Cruz" },
@@ -107,13 +118,60 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
     setActivo(value === "true");
   };
 
+  // Manejar la selección de imagen
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Verificar tipo de archivo
+      if (!file.type.match('image.*')) {
+        // toast({
+        //   title: "Error",
+        //   description: "Por favor seleccione una imagen válida",
+        //   variant: "error"
+        // });
+        return;
+      }
+      
+      // Verificar tamaño (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        // toast({
+        //   title: "Error",
+        //   description: "La imagen debe ser menor a 5MB",
+        //   variant: "error"
+        // });
+        return;
+      }
+      
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+  
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (!fechaNacimiento) {
       return;
     }
 
     setLoading(true);
+    
     try {
+      let imagenUrl = agente.imagenUrl;
+      
+      // Si hay una nueva imagen seleccionada, subirla
+      if (selectedImage) {
+        const newImageUrl = await uploadImageToSupabase(
+          selectedImage, 
+          `${data.nombres}-${data.apellidos}`
+        );
+        if (newImageUrl) {
+          imagenUrl = newImageUrl;
+        }
+      } else if (previewUrl === null && agente.imagenUrl) {
+        // Si se eliminó la imagen previamente existente
+        imagenUrl = null;
+      }
+      
       const response = await fetch(`/api/agentes?id=${agente.id}`, {
         method: "PUT",
         headers: {
@@ -130,18 +188,32 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
           telefono: data.telefono || "",
           celular: data.celular,
           email: data.email || "",
-          activo: activo
+          activo: activo,
+          imagenUrl: imagenUrl
         }),
       });
 
       if (response.ok) {
         closeModal();
+        setSelectedImage(null);
         onSave();
       } else {
-        console.error("Error al actualizar agente");
+        const errorData = await response.json();
+        // toast({
+        //   title: "Error",
+        //   description: errorData.error || "Error al actualizar agente",
+        //   variant: "error"
+        // });
+        console.error("Error al actualizar agente:", errorData);
+        console.error(errorData);
       }
     } catch (error) {
       console.error("Error:", error);
+      // toast({
+      //   title: "Error",
+      //   description: "Ocurrió un error al procesar la solicitud",
+      //   variant: "error"
+      // });
     } finally {
       setLoading(false);
     }
@@ -173,6 +245,54 @@ const EditarAgente: React.FC<Props> = ({ agente, onSave }) => {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-1">
+            {/* Sección de imagen de perfil */}
+            <div className="flex flex-col items-center mb-6">
+              <div 
+                className="relative w-32 h-32 mb-3 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-700"
+              >
+                {previewUrl ? (
+                  <img 
+                    src={previewUrl} 
+                    alt="Vista previa" 
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full text-gray-400">
+                    <FileIcon className="w-12 h-12" />
+                  </div>
+                )}
+              </div>
+              
+              <label 
+                htmlFor="profile-image-edit" 
+                className="px-4 py-2 text-sm font-medium text-white transition bg-brand-500 rounded-lg cursor-pointer hover:bg-brand-600"
+              >
+                Cambiar Imagen
+              </label>
+              <input
+                id="profile-image-edit"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              {previewUrl && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setPreviewUrl(null);
+                  }}
+                  className="mt-2 text-sm text-gray-500 underline dark:text-gray-400"
+                >
+                  Eliminar imagen
+                </button>
+              )}
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Formatos permitidos: JPG, PNG, GIF. Máximo 5MB.
+              </p>
+            </div>
+            
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div>
                 {fieldTitle('Nombres')}
