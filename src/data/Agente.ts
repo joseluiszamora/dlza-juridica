@@ -1,28 +1,36 @@
+import Agencia from "./Agencia";
+
 export default class Agente {
   id: number;
-  nombres: string | null;
-  apellidos: string | null;
-  documento: string | null;
-  expedido: string | null;
-  fechaNacimiento: Date | null;
-  genero: string | null;
+  nombres: string;
+  apellidos: string;
+  documento: string;
+  expedido: string;
+  fechaNacimiento: Date;
+  genero: string;
   direccion: string | null;
   telefono: string | null;
-  celular: string | null;
+  celular: string;
   email: string | null;
+  created_at: Date;
+  activo: boolean | null;
+  agencias?: Agencia[];
 
   constructor(
     id: number,
-    nombres: string | null = "",
-    apellidos: string | null = "",
-    documento: string | null = "",
-    expedido: string | null = "",
-    fechaNacimiento: Date | null = null,
-    genero: string | null = "",
+    nombres: string,
+    apellidos: string,
+    documento: string,
+    expedido: string,
+    fechaNacimiento: Date,
+    genero: string,
+    celular: string,
     direccion: string | null = "",
     telefono: string | null = "",
-    celular: string | null = "",
-    email: string | null = ""
+    email: string | null = "",
+    activo: boolean | null = true,
+    created_at: Date = new Date(),
+    agencias: Agencia[] = []
   ) {
     this.id = id;
     this.nombres = nombres;
@@ -35,6 +43,8 @@ export default class Agente {
     this.telefono = telefono;
     this.celular = celular;
     this.email = email;
+    this.created_at = created_at;
+    this.activo = activo;
+    this.agencias = agencias;
   }
-
 }
