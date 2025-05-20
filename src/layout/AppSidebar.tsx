@@ -39,6 +39,11 @@ const navItems: NavItem[] = [
   },
   {
     icon: <CalenderIcon />,
+    name: "Ciudades",
+    path: "/juridica/ciudades",
+  },
+  {
+    icon: <CalenderIcon />,
     name: "Juridica",
     path: "/juridica/contratos",
   },
