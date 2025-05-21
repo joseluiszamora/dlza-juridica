@@ -19,9 +19,10 @@ model Usuario {
   apellidos String
   documento String
   imagenUrl String?
-  // role      String   @default("user")
-  // cargo     String?
-  // area      String
+  role      String   @default("user")
+  cargo     String?
+  area      String?
+  activo    Boolean  @default(true)
   createdAt DateTime @default(now())
 }
 

@@ -101,6 +101,10 @@ export async function POST(request: NextRequest) {
         nombres: body.nombres,
         apellidos: body.apellidos,
         documento: body.documento,
+        role: body.role || "user",
+        cargo: body.cargo,
+        area: body.area,
+        activo: body.activo === false ? false : true,
         imagenUrl: body.imagenUrl
       },
       select: {
@@ -110,6 +114,10 @@ export async function POST(request: NextRequest) {
         nombres: true,
         apellidos: true,
         documento: true,
+        role: true,
+        cargo: true,
+        area: true,
+        activo: true,
         imagenUrl: true,
         createdAt: true,
         // No incluir el password por seguridad
@@ -183,7 +191,11 @@ export async function PUT(request: NextRequest) {
       nombres: body.nombres,
       apellidos: body.apellidos,
       documento: body.documento,
-      imagenUrl: body.imagenUrl,
+      role: body.role || "user",
+      cargo: body.cargo,
+      area: body.area,
+      activo: body.activo === false ? false : true,
+      imagenUrl: body.imagenUrl
     };
 
     // Si se proporciona una nueva contraseña, encriptarla
@@ -202,6 +214,10 @@ export async function PUT(request: NextRequest) {
         nombres: true,
         apellidos: true,
         documento: true,
+        role: true,
+        cargo: true,
+        area: true,
+        activo: true,
         imagenUrl: true,
         createdAt: true,
         // No incluir el password por seguridad

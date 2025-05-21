@@ -3,12 +3,13 @@ import Button from "@/components/ui/button/Button";
 import { SpinnerLoader } from "@/components/ui/loader/loaders";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
-import { PencilIcon, ImageIcon, EyeIcon, EyeCloseIcon } from "@/icons";
+import { PencilIcon, ImageIcon, EyeIcon, EyeCloseIcon, ChevronDownIcon } from "@/icons";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 // import { useToast } from "@/hooks/useToast";
 import Usuario from "@/data/Usuario";
 import { uploadImageToSupabase } from "@/services/supabaseClient";
+import Select from "@/components/form/Select";
 
 type Inputs = {
   username: string;
@@ -18,6 +19,8 @@ type Inputs = {
   nombres: string;
   apellidos: string;
   documento: string;
+  cargo: string;
+  area: string;
 };
 
 interface Props {
@@ -33,6 +36,8 @@ const EditarUsuario: React.FC<Props> = ({ usuario, onSave }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
+  const [role, setRole] = useState(usuario.role || "user");
+  const [activo, setActivo] = useState(usuario.activo !== false);
   // const { toast } = useToast();
 
   const {
@@ -49,6 +54,8 @@ const EditarUsuario: React.FC<Props> = ({ usuario, onSave }) => {
       nombres: usuario.nombres,
       apellidos: usuario.apellidos,
       documento: usuario.documento,
+      cargo: usuario.cargo || "",
+      area: usuario.area || "",
       password: "",
       confirmPassword: ""
     }
@@ -64,11 +71,15 @@ const EditarUsuario: React.FC<Props> = ({ usuario, onSave }) => {
       nombres: usuario.nombres,
       apellidos: usuario.apellidos,
       documento: usuario.documento,
+      cargo: usuario.cargo || "",
+      area: usuario.area || "",
       password: "",
       confirmPassword: ""
     });
     setPreviewUrl(usuario.imagenUrl);
     setChangePassword(false);
+    setRole(usuario.role || "user");
+    setActivo(usuario.activo !== false);
   }, [usuario, reset]);
 
   // Manejar la selección de imagen
@@ -101,6 +112,24 @@ const EditarUsuario: React.FC<Props> = ({ usuario, onSave }) => {
     }
   };
 
+  const roleOptions = [
+    { value: "user", label: "Usuario" },
+    { value: "admin", label: "Administrador" },
+  ];
+
+  const activoOptions = [
+    { value: "true", label: "Activo" },
+    { value: "false", label: "Inactivo" },
+  ];
+
+  const handleRoleChange = (value: string) => {
+    setRole(value);
+  };
+
+  const handleActivoChange = (value: string) => {
+    setActivo(value === "true");
+  };
+  
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (changePassword && data.password !== data.confirmPassword) {
       // toast({
@@ -139,6 +168,10 @@ const EditarUsuario: React.FC<Props> = ({ usuario, onSave }) => {
         nombres: data.nombres,
         apellidos: data.apellidos,
         documento: data.documento,
+        role: role,
+        cargo: data.cargo || null,
+        area: data.area || null,
+        activo: activo,
         imagenUrl: imagenUrl
       };
 
@@ -358,6 +391,66 @@ const EditarUsuario: React.FC<Props> = ({ usuario, onSave }) => {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 gap-5 mt-5 md:grid-cols-2">
+              <div>
+                {fieldTitle('Rol')}
+                <div className="relative">
+                  <Select
+                    options={roleOptions}
+                    defaultValue={role}
+                    placeholder="Seleccionar Rol"
+                    onChange={handleRoleChange}
+                    className="dark:bg-dark-900"
+                  />
+                  <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                    <ChevronDownIcon/>
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                {fieldTitle('Estado')}
+                <div className="relative">
+                  <Select
+                    options={activoOptions}
+                    defaultValue={activo ? "true" : "false"}
+                    placeholder="Seleccionar Estado"
+                    onChange={handleActivoChange}
+                    className="dark:bg-dark-900"
+                  />
+                  <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                    <ChevronDownIcon/>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 mt-5 md:grid-cols-2">
+              <div>
+                {fieldTitle('Cargo (opcional)')}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Cargo del usuario"
+                    {...register("cargo")}
+                    className={`${inputStyle} dark:border-gray-700 border-gray-300`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                {fieldTitle('Área (opcional)')}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Área o departamento"
+                    {...register("area")}
+                    className={`${inputStyle} dark:border-gray-700 border-gray-300`}
+                  />
+                </div>
+              </div>
+            </div>
+            
             {/* Opción para cambiar contraseña */}
             <div className="mt-5">
               <div className="flex items-center mt-3 mb-2">

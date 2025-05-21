@@ -57,20 +57,36 @@ const UsuarioListItem: React.FC<Props> = ({ usuario, onChange, onDelete }) => {
           </div>
           <div className="font-medium text-gray-900 dark:text-white">
             {usuario.username}
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {usuario.role === 'admin' ? 'Administrador' : 'Usuario'}
+            </div>
           </div>
         </div>
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {`${usuario.nombres} ${usuario.apellidos}`}
+        <div>
+          {`${usuario.nombres} ${usuario.apellidos}`}
+          {(usuario.cargo || usuario.area) && (
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {usuario.cargo && <span>{usuario.cargo}</span>}
+              {usuario.cargo && usuario.area && <span> - </span>}
+              {usuario.area && <span>{usuario.area}</span>}
+            </div>
+          )}
+        </div>
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
         {usuario.email}
       </TableCell>
       
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {usuario.documento}
+      <TableCell className="px-4 py-3 text-start text-theme-sm">
+        <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
+          usuario.activo ? 'bg-success-100 text-success-700' : 'bg-error-100 text-error-700'
+        }`}>
+          {usuario.activo ? 'Activo' : 'Inactivo'}
+        </span>
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
