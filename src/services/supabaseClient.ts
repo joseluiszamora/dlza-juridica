@@ -7,25 +7,23 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 // Crear el cliente de Supabase
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Función para subir una imagen al bucket 'agentes'
-export async function uploadImageToSupabase(file: File, agenteName: string): Promise<string | null> {
+// Función para subir una imagen al bucket especificado
+export async function uploadImageToSupabase(file: File, name: string, bucket: string = 'agentes'): Promise<string | null> {
   try {
-    // Crear un nombre de archivo único basado en el timestamp y el nombre del agente
+    // Crear un nombre de archivo único basado en el timestamp y el nombre
     const timestamp = new Date().getTime();
-    const fileName = `${timestamp}-${agenteName.replace(/\s+/g, '-').toLowerCase()}`;
+    const fileName = `${timestamp}-${name.replace(/\s+/g, '-').toLowerCase()}`;
     const fileExt = file.name.split('.').pop();
     const filePath = `${fileName}.${fileExt}`;
     
-    // Subir el archivo al bucket 'agentes'
-    const { data, error } = await supabase.storage
-      .from('agentes')
+    // Subir el archivo al bucket específico
+    const { error } = await supabase.storage
+      .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',
         upsert: false
       });
     
-      console.log('data', data);
-
     if (error) {
       console.error('Error al subir la imagen:', error);
       return null;
@@ -33,7 +31,7 @@ export async function uploadImageToSupabase(file: File, agenteName: string): Pro
     
     // Obtener la URL pública de la imagen
     const { data: urlData } = supabase.storage
-      .from('agentes')
+      .from(bucket)
       .getPublicUrl(filePath);
     
     return urlData.publicUrl;

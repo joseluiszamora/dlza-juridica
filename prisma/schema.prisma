@@ -10,10 +10,18 @@ datasource db {
   extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions")]
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String
+  nombres   String
+  apellidos String
+  documento String
+  imagenUrl String?
+  // role      String   @default("user")
+  // cargo     String?
+  // area      String
   createdAt DateTime @default(now())
 }
 
