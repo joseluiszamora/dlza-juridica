@@ -62,7 +62,7 @@ model Agencia {
   ciudadId                       Int               @default(1)
   agente                         Agente            @relation(fields: [agenteId], references: [id])
   ciudad                         Ciudad            @relation(fields: [ciudadId], references: [id])
-  contratos                      ContratoAgencia[] // Relación inversa: una agencia tiene muchos contratos
+  contratos                      ContratoAgencia[]
 }
 
 model ContratoAgencia {
@@ -76,8 +76,8 @@ model ContratoAgencia {
   estado                String?   @default("vigente")
   observaciones         String?
   createdAt             DateTime  @default(now()) @db.Timestamptz(6)
-  agenciaId             Int // Campo para la clave foránea
-  agencia               Agencia   @relation(fields: [agenciaId], references: [id]) // Relación: contrato pertenece a una agencia
+  agenciaId             Int
+  agencia               Agencia   @relation(fields: [agenciaId], references: [id])
 }
 
 model Agente {
@@ -107,7 +107,7 @@ model Ciudad {
   pais      String     @default("Bolivia")
   createdAt DateTime   @default(now()) @db.Timestamptz(6)
   agencias  Agencia[]
-  empleados Empleado[] // Relación inversa: una ciudad tiene muchos empleados
+  empleados Empleado[]
 }
 
 model Empleado {
@@ -128,11 +128,11 @@ model Empleado {
   salario               Int      @default(0)
   vacacionesDisponibles Int      @default(0)
   cargo                 String
-  areaId                Int // Cambiado de area String a areaId Int
+  areaId                Int
   createdAt             DateTime @default(now()) @db.Timestamptz(6)
   ciudadId              Int
+  area                  Area     @relation(fields: [areaId], references: [id])
   ciudad                Ciudad   @relation(fields: [ciudadId], references: [id])
-  area                  Area     @relation(fields: [areaId], references: [id]) // Relación: empleado pertenece a un área
 }
 
 model Area {
@@ -140,7 +140,7 @@ model Area {
   nombre       String
   departamento String?
   createdAt    DateTime   @default(now()) @db.Timestamptz(6)
-  empleados    Empleado[] // Relación inversa: un área tiene muchos empleados
+  empleados    Empleado[]
 }
 
 model Marca {
