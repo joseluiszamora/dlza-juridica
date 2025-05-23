@@ -10,12 +10,15 @@ import CiudadListItem from "./components/TableItem";
 import CiudadTableHeader from "./components/TableHeader";
 import BuscarCiudad from "./components/BuscarCiudad";
 import NuevaCiudad from "./components/NuevaCiudad";
+import { useToast } from "@/hooks/useToast";
+import { Toaster } from "@/components/ui/toaster/Toaster";
 
 export default function Ciudades() {
   const [loading, setLoading] = useState(false);
   const [ciudades, setCiudades] = useState([] as Array<Ciudad>);
   const [allCiudades, setAllCiudades] = useState([] as Array<Ciudad>);
   const [searchTerm, setSearchTerm] = useState("");
+  const { addToast } = useToast();
 
   useEffect(() => {
     getData();
@@ -43,6 +46,15 @@ export default function Ciudades() {
         setCiudades(data.data);
         setAllCiudades(data.data);
         console.log(data);
+      })
+      .catch(error => {
+        setLoading(false);
+        console.log(error);
+        addToast({
+          title: "Error",
+          description: "No se pudieron cargar las ciudades",
+          variant: "destructive"
+        });
       });
   };
 
@@ -50,8 +62,32 @@ export default function Ciudades() {
     setSearchTerm(term);
   };
 
+  const handleSaveSuccess = (isNew = false) => {
+    getData();
+    addToast({
+      title: "Operación exitosa",
+      description: isNew 
+        ? "La ciudad ha sido creada correctamente" 
+        : "La ciudad ha sido actualizada correctamente",
+      variant: "success"
+    });
+  };
+
+  // const handleDeleteSuccess = () => {
+  //   getData();
+  //   addToast({
+  //     title: "Ciudad eliminada",
+  //     description: "La ciudad ha sido eliminada correctamente",
+  //     variant: "success"
+  //   });
+  // };
+
   const files = ciudades.map((element: Ciudad) => (
-    <CiudadListItem ciudad={element} key={element.id} onChange={getData} />
+    <CiudadListItem 
+      ciudad={element} 
+      key={element.id} 
+      onChange={() => handleSaveSuccess(false)}
+    />
   ));
 
   return(
@@ -62,7 +98,7 @@ export default function Ciudades() {
     <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 xl:p-5 dark:bg-white/[0.03] mb-5">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <BuscarCiudad onSearch={handleSearch} />
-        <NuevaCiudad onSave={getData} />
+        <NuevaCiudad onSave={() => handleSaveSuccess(true)} />
       {/* <NuevoContrato onSave={getData} />
       <AgregarDocumento /> */}
       </div>
@@ -97,6 +133,9 @@ export default function Ciudades() {
           
         </div>
       </div>
+    </div>
+    <div className="fixed z-50 bottom-0 right-0">
+      <Toaster />
     </div>
   </div>);
 }

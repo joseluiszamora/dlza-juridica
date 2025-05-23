@@ -7,13 +7,15 @@ import BuscarUsuario from "./components/BuscarUsuario";
 import NuevoUsuario from "./components/NuevoUsuario";
 import UsuarioTableHeader from "./components/TableHeader";
 import UsuarioListItem from "./components/TableItem";
+import { useToast } from "@/hooks/useToast";
+import { Toaster } from "@/components/ui/toaster/Toaster";
 
 export default function Usuarios() {
   const [loading, setLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([] as Array<Usuario>);
   const [allUsuarios, setAllUsuarios] = useState([] as Array<Usuario>);
   const [searchTerm, setSearchTerm] = useState("");
-  // const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     getData();
@@ -47,11 +49,11 @@ export default function Usuarios() {
       .catch(error => {
         setLoading(false);
         console.log(error);
-        // toast({
-        //   title: "Error",
-        //   description: "No se pudieron cargar los usuarios",
-        //   variant: "error"
-        // });
+        addToast({
+          title: "Error",
+          description: "No se pudieron cargar los usuarios",
+          variant: "destructive"
+        });
       });
   };
 
@@ -61,20 +63,22 @@ export default function Usuarios() {
 
   const handleDeleteSuccess = () => {
     getData();
-    // toast({
-    //   title: "Usuario eliminado",
-    //   description: "El usuario ha sido eliminado correctamente",
-    //   variant: "success"
-    // });
+    addToast({
+      title: "Usuario eliminado",
+      description: "El usuario ha sido eliminado correctamente",
+      variant: "success"
+    });
   };
 
-  const handleSaveSuccess = () => {
+  const handleSaveSuccess = (isNew = false) => {
     getData();
-    // toast({
-    //   title: "Operación exitosa",
-    //   description: "Los datos han sido actualizados correctamente",
-    //   variant: "success"
-    // });
+    addToast({
+      title: "Operación exitosa",
+      description: isNew 
+        ? "El usuario ha sido creado correctamente" 
+        : "El usuario ha sido actualizado correctamente",
+      variant: "success"
+    });
   };
 
   return (
@@ -85,7 +89,7 @@ export default function Usuarios() {
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <BuscarUsuario onSearch={handleSearch} />
           <div className="flex justify-end">
-            <NuevoUsuario onSave={handleSaveSuccess} />
+            <NuevoUsuario onSave={() => handleSaveSuccess(true)} />
           </div>
         </div>
       </div>
@@ -121,7 +125,9 @@ export default function Usuarios() {
           </div>
         </div>
       </div>
-      {/* <Toaster /> */}
+      <div className="fixed z-50 bottom-0 right-0">
+        <Toaster />
+      </div>
     </div>
   );
 }

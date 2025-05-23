@@ -4,6 +4,7 @@ import Button from "@/components/ui/button/Button";
 import { SpinnerLoader } from "@/components/ui/loader/loaders";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
+import { useToast } from "@/hooks/useToast";
 import { PlusIcon } from "@/icons";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -21,7 +22,7 @@ type Inputs = {
 };
 
 interface Props {
-  onSave: () => void;
+  onSave: (isNew?: boolean) => void;
 }
 
 const NuevoContrato: React.FC<Props> = (props) => {
@@ -41,6 +42,8 @@ const NuevoContrato: React.FC<Props> = (props) => {
       // nacimiento: new Date() || null,
     },
   });
+
+  const { addToast } = useToast();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
@@ -65,7 +68,13 @@ const NuevoContrato: React.FC<Props> = (props) => {
     if (response.ok) {
       router.push("/juridica/contratos");
       closeModal();
-      props.onSave();
+      props.onSave(true);
+    } else {
+      addToast({
+        title: "Error",
+        description: "Hubo un problema al crear el contrato",
+        variant: "destructive"
+      });
     }
   };
 

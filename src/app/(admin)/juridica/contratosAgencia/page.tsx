@@ -7,15 +7,18 @@ import ContratoAgenciaListItem from "./components/TableItem";
 import ContratoAgenciaTableHeader from "./components/TableHeader";
 import BuscarContratoAgencia from "./components/BuscarContratoAgencia";
 import NuevoContratoAgencia from "./components/NuevoContratoAgencia";
+import { useToast } from "@/hooks/useToast";
 
 export default function ContratosAgencia() {
   const [loading, setLoading] = useState(false);
   const [contratos, setContratos] = useState([] as Array<ContratoAgencia>);
   const [allContratos, setAllContratos] = useState([] as Array<ContratoAgencia>);
   const [searchTerm, setSearchTerm] = useState("");
+  const { addToast } = useToast();
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -44,6 +47,11 @@ export default function ContratosAgencia() {
       .catch(error => {
         setLoading(false);
         console.log(error);
+        addToast({
+          title: "Error",
+          description: "No se pudieron cargar los contratos de agencias",
+          variant: "destructive"
+        });
       });
   };
 
@@ -53,13 +61,26 @@ export default function ContratosAgencia() {
 
   const handleDeleteSuccess = () => {
     getData();
+    addToast({
+      title: "Contrato eliminado",
+      description: "El contrato ha sido eliminado correctamente",
+      variant: "success"
+    });
   };
 
-  const handleSaveSuccess = () => {
+  const handleSaveSuccess = (isNew = false) => {
     getData();
+    addToast({
+      title: "Operación exitosa",
+      description: isNew 
+        ? "El contrato ha sido creado correctamente" 
+        : "El contrato ha sido actualizado correctamente",
+      variant: "success"
+    });
   };
 
   return (
+    <>
     <div>
       <PageBreadcrumb pageTitle="Contratos de Agencias" />
 
@@ -67,7 +88,7 @@ export default function ContratosAgencia() {
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <BuscarContratoAgencia onSearch={handleSearch} />
           <div className="flex justify-end">
-            <NuevoContratoAgencia onSave={handleSaveSuccess} />
+            <NuevoContratoAgencia onSave={() => handleSaveSuccess(true)} />
           </div>
         </div>
       </div>
@@ -104,5 +125,6 @@ export default function ContratosAgencia() {
         </div>
       </div>
     </div>
+    </>    
   );
 }

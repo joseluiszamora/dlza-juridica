@@ -70,3 +70,46 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Error al crear contrato' }, { status: 500 })
   }
 }
+
+// DELETE - Eliminar un contrato (baja lógica)
+export async function DELETE(request: NextRequest) {
+  const url = new URL(request.url);
+  const id = url.pathname.split('/').pop();
+  
+  if (!id || isNaN(Number(id))) {
+    return NextResponse.json(
+      { error: "ID de contrato no válido" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const contractId = parseInt(id);
+    
+    // Verificar si el contrato existe
+    const existingContract = await prisma.contract.findUnique({
+      where: { id: contractId }
+    });
+
+    if (!existingContract) {
+      return NextResponse.json(
+        { error: "Contrato no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    // Realizar baja lógica
+    const deletedContract = await prisma.contract.update({
+      where: { id: contractId },
+      data: { bajaLogica: true }
+    });
+
+    return NextResponse.json(deletedContract);
+  } catch (error) {
+    console.error('Error eliminando contrato:', error);
+    return NextResponse.json(
+      { error: "Error al eliminar el contrato" },
+      { status: 500 }
+    );
+  }
+}

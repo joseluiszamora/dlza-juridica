@@ -1,7 +1,7 @@
 import Button from "@/components/ui/button/Button";
 import { TableRow, TableCell } from "@/components/ui/table";
 import ContratoAgencia from "@/data/ContratoAgencia";
-import { CalenderIcon, TrashBinIcon } from '@/icons';
+import { TrashBinIcon } from '@/icons';
 import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
@@ -79,11 +79,9 @@ const ContratoAgenciaListItem: React.FC<Props> = ({ contrato, onChange, onDelete
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
         <div className="flex flex-col">
           <div className="flex items-center">
-            <CalenderIcon className="w-3 h-3 mr-1" />
             <span className="text-xs">Inicio: {formatDate(contrato.contratoAgenciaInicio)}</span>
           </div>
           <div className="flex items-center mt-1">
-            <CalenderIcon className="w-3 h-3 mr-1" />
             <span className="text-xs">Fin: {formatDate(contrato.contratoAgenciaFin)}</span>
           </div>
         </div>

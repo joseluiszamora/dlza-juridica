@@ -7,16 +7,15 @@ import AgenteListItem from "./components/TableItem";
 import AgenteTableHeader from "./components/TableHeader";
 import BuscarAgente from "./components/BuscarAgente";
 import NuevoAgente from "./components/NuevoAgente";
-
-// import { useToast } from "@/hooks/useToast";
-// import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/useToast";
+import { Toaster } from "@/components/ui/toaster/Toaster";
 
 export default function Agentes() {
   const [loading, setLoading] = useState(false);
   const [agentes, setAgentes] = useState([] as Array<Agente>);
   const [allAgentes, setAllAgentes] = useState([] as Array<Agente>);
   const [searchTerm, setSearchTerm] = useState("");
-  // const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     getData();
@@ -49,11 +48,11 @@ export default function Agentes() {
       .catch(error => {
         console.log(error)
         setLoading(false);
-        // toast({
-        //   title: "Error",
-        //   description: "No se pudieron cargar los agentes",
-        //   variant: "error"
-        // });
+        addToast({
+          title: "Error",
+          description: "No se pudieron cargar los agentes",
+          variant: "destructive"
+        });
       });
   };
 
@@ -63,20 +62,22 @@ export default function Agentes() {
 
   const handleDeleteSuccess = () => {
     getData();
-    // toast({
-    //   title: "Agente eliminado",
-    //   description: "El agente ha sido eliminado correctamente",
-    //   variant: "success"
-    // });
+    addToast({
+      title: "Agente eliminado",
+      description: "El agente ha sido eliminado correctamente",
+      variant: "success"
+    });
   };
 
-  const handleSaveSuccess = () => {
+  const handleSaveSuccess = (isNew = false) => {
     getData();
-    // toast({
-    //   title: "Operación exitosa",
-    //   description: "Los datos han sido actualizados correctamente",
-    //   variant: "success"
-    // });
+    addToast({
+      title: "Operación exitosa",
+      description: isNew 
+        ? "El agente ha sido creado correctamente" 
+        : "El agente ha sido actualizado correctamente",
+      variant: "success"
+    });
   };
 
   return (
@@ -87,7 +88,7 @@ export default function Agentes() {
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <BuscarAgente onSearch={handleSearch} />
           <div className="flex justify-end">
-            <NuevoAgente onSave={handleSaveSuccess} />
+            <NuevoAgente onSave={() => handleSaveSuccess(true)} />
           </div>
         </div>
       </div>
@@ -123,7 +124,9 @@ export default function Agentes() {
           </div>
         </div>
       </div>
-      {/* <Toaster /> */}
+      <div className="fixed z-50 bottom-0 right-0">
+        <Toaster />
+      </div>
     </div>
   );
 }
