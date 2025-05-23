@@ -41,27 +41,43 @@ model Contract {
 }
 
 model Agencia {
-  id                             Int       @id @default(autoincrement())
-  created_at                     DateTime  @default(now()) @db.Timestamptz(6)
-  nombre                         String?   @default("")
-  agenteNombre                   String?   @default("")
-  direccion                      String?   @default("")
-  latitud                        Float?    @db.Real
-  longitud                       Float?    @db.Real
+  id                             Int               @id @default(autoincrement())
+  created_at                     DateTime          @default(now()) @db.Timestamptz(6)
+  nombre                         String?           @default("")
+  agenteNombre                   String?           @default("")
+  direccion                      String?           @default("")
+  latitud                        Float?            @db.Real
+  longitud                       Float?            @db.Real
   licenciaDeFuncionamiento       Boolean?
-  vigenciaLicenciaFuncionamiento DateTime? @db.Date
+  vigenciaLicenciaFuncionamiento DateTime?         @db.Date
   nitAgencia                     String?
   tipoGarantia                   String?
-  montoGarantia                  Float?    @db.Real
+  montoGarantia                  Float?            @db.Real
   testimonioNotarial             String?
   contratoAlquiler               String?
-  contratoAgenciaInicio          DateTime? @db.Date
-  contratoAgenciaFin             DateTime? @db.Date
+  contratoAgenciaInicio          DateTime?         @db.Date
+  contratoAgenciaFin             DateTime?         @db.Date
   observaciones                  String?
-  agenteId                       Int       @default(1)
-  ciudadId                       Int       @default(1)
-  agente                         Agente    @relation(fields: [agenteId], references: [id])
-  ciudad                         Ciudad    @relation(fields: [ciudadId], references: [id])
+  agenteId                       Int               @default(1)
+  ciudadId                       Int               @default(1)
+  agente                         Agente            @relation(fields: [agenteId], references: [id])
+  ciudad                         Ciudad            @relation(fields: [ciudadId], references: [id])
+  contratos                      ContratoAgencia[] // Relación inversa: una agencia tiene muchos contratos
+}
+
+model ContratoAgencia {
+  id                    Int       @id @default(autoincrement())
+  codigoContrato        String
+  contratoAgenciaInicio DateTime? @db.Date
+  contratoAgenciaFin    DateTime? @db.Date
+  tipoGarantia          String?
+  montoGarantia         Float?    @db.Real
+  testimonioNotarial    String?
+  estado                String?   @default("vigente")
+  observaciones         String?
+  createdAt             DateTime  @default(now()) @db.Timestamptz(6)
+  agenciaId             Int // Campo para la clave foránea
+  agencia               Agencia   @relation(fields: [agenciaId], references: [id]) // Relación: contrato pertenece a una agencia
 }
 
 model Agente {
@@ -102,7 +118,7 @@ model Empleado {
   tipoDocumento         String   @default("CI")
   fechaNacimiento       DateTime @db.Date
   genero                String?
-  codigoSap             Int      @default(0)
+  codigoSap             String?
   fechaIngreso          DateTime @db.Date
   activo                Boolean  @default(true)
   telefono              String?
@@ -125,4 +141,34 @@ model Area {
   departamento String?
   createdAt    DateTime   @default(now()) @db.Timestamptz(6)
   empleados    Empleado[] // Relación inversa: un área tiene muchos empleados
+}
+
+model Marca {
+  id                      Int       @id @default(autoincrement())
+  nombre                  String
+  estado                  String    @default("renovada")
+  logotipoUrl             String?
+  genero                  String
+  tipo                    String
+  claseNiza               String
+  numeroRegistro          String
+  fechaRegistro           DateTime  @db.Date
+  tramiteArealizar        String?
+  fechaExpiracionRegistro DateTime?
+  fechaLimiteRenovacion   DateTime?
+  titular                 String
+  apoderado               String
+  createdAt               DateTime  @default(now()) @db.Timestamptz(6)
+}
+
+model RenovacionMarca {
+  id                  Int       @id @default(autoincrement())
+  estadoRenovacion    String    @default("renovada")
+  numeroDeRenovacion  String?
+  fechaParaRenovacion DateTime?
+  numeroDeSolicitud   String
+  titular             String
+  apoderado           String
+  procesoSeguidoPor   String?
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
 }
