@@ -16,8 +16,22 @@ export default function ContratosAgencia() {
   const [searchTerm, setSearchTerm] = useState("");
   const { addToast } = useToast();
 
+  const [selectedAgenciaId, setSelectedAgenciaId] = useState<number | null>(null);
+  const [selectedAgenciaNombre, setSelectedAgenciaNombre] = useState<string>("");
+
   useEffect(() => {
-    getData();
+    // Verificar si hay un ID de agencia en los parámetros de la URL
+    const params = new URLSearchParams(window.location.search);
+    const agenciaId = params.get("agenciaId");
+    
+    if (agenciaId) {
+      setSelectedAgenciaId(parseInt(agenciaId));
+      // Cargar datos filtrados por agencia
+      getData(parseInt(agenciaId));
+    } else {
+      // Cargar todos los contratos
+      getData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -35,14 +49,22 @@ export default function ContratosAgencia() {
     }
   }, [searchTerm, allContratos]);
 
-  const getData = () => {
+  const getData = (agenciaId?: number) => {
     setLoading(true);
-    fetch("/api/contratosAgencia")
+    // Construir la URL según si hay filtro por agencia
+    const url = agenciaId ? `/api/contratosAgencia?agenciaId=${agenciaId}` : "/api/contratosAgencia";
+    
+    fetch(url)
       .then((response) => response.json())
       .then((data) => {
         setLoading(false);
         setContratos(data.data);
         setAllContratos(data.data);
+        
+        // Si hay contratos y estamos filtrando por agencia, obtener el nombre de la agencia
+        if (data.data.length > 0 && agenciaId) {
+          setSelectedAgenciaNombre(data.data[0].agencia?.nombre || "Agencia");
+        }
       })
       .catch(error => {
         setLoading(false);
@@ -79,16 +101,34 @@ export default function ContratosAgencia() {
     });
   };
 
+  const handleVolver = () => {
+    // Redireccionar a la página de agencias
+    window.location.href = "/juridica/agencias";
+  };
+
   return (
     <>
     <div>
-      <PageBreadcrumb pageTitle="Contratos de Agencias" />
+      <PageBreadcrumb pageTitle={selectedAgenciaNombre ? `Contratos de Agencia: ${selectedAgenciaNombre}` : "Contratos de Agencias"} />
 
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 xl:p-5 dark:bg-white/[0.03] mb-5">
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <BuscarContratoAgencia onSearch={handleSearch} />
+          <div className="flex items-center">
+            <BuscarContratoAgencia onSearch={handleSearch} />
+            {selectedAgenciaId && (
+              <button 
+                onClick={handleVolver} 
+                className="ml-4 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 text-sm"
+              >
+                ← Volver a Agencias
+              </button>
+            )}
+          </div>
           <div className="flex justify-end">
-            <NuevoContratoAgencia onSave={() => handleSaveSuccess(true)} />
+            <NuevoContratoAgencia 
+              onSave={() => handleSaveSuccess(true)} 
+              agenciaPreseleccionada={selectedAgenciaId}
+            />
           </div>
         </div>
       </div>

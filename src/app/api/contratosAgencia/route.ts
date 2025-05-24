@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 export async function GET(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id");
+    const agenciaId = req.nextUrl.searchParams.get("agenciaId");
     
     if (id) {
       // Obtener un contrato específico por ID
@@ -24,6 +25,21 @@ export async function GET(req: NextRequest) {
       }
       
       return NextResponse.json({ data: contrato });
+    } else if (agenciaId) {
+      // Obtener todos los contratos de una agencia específica
+      const contratos = await prisma.contratoAgencia.findMany({
+        where: {
+          agenciaId: parseInt(agenciaId)
+        },
+        include: {
+          agencia: true
+        },
+        orderBy: {
+          createdAt: "desc"
+        }
+      });
+      
+      return NextResponse.json({ data: contratos });
     } else {
       // Obtener todos los contratos
       const contratos = await prisma.contratoAgencia.findMany({

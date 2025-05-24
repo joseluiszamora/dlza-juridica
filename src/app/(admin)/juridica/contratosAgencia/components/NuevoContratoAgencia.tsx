@@ -8,9 +8,10 @@ import Agencia from "@/data/Agencia";
 
 interface Props {
   onSave: () => void;
+  agenciaPreseleccionada?: number | null;
 }
 
-const NuevoContratoAgencia: React.FC<Props> = ({ onSave }) => {
+const NuevoContratoAgencia: React.FC<Props> = ({ onSave, agenciaPreseleccionada }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const NuevoContratoAgencia: React.FC<Props> = ({ onSave }) => {
     testimonioNotarial: "",
     estado: "vigente",
     observaciones: "",
-    agenciaId: ""
+    agenciaId: agenciaPreseleccionada ? agenciaPreseleccionada.toString() : ""
   });
   const [agencias, setAgencias] = useState<Agencia[]>([]);
   const [loadingAgencias, setLoadingAgencias] = useState(false);
@@ -30,8 +31,16 @@ const NuevoContratoAgencia: React.FC<Props> = ({ onSave }) => {
   useEffect(() => {
     if (isOpen) {
       fetchAgencias();
+      
+      // Actualizar el ID de agencia si hay una preseleccionada
+      if (agenciaPreseleccionada) {
+        setFormData(prev => ({
+          ...prev,
+          agenciaId: agenciaPreseleccionada.toString()
+        }));
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, agenciaPreseleccionada]);
 
   const fetchAgencias = async () => {
     setLoadingAgencias(true);

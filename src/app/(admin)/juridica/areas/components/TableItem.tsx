@@ -1,29 +1,35 @@
 import Button from "@/components/ui/button/Button";
 import { TableRow, TableCell } from "@/components/ui/table";
-import Agencia from "@/data/Agencia";
-import { MapIcon, TrashBinIcon, FileIcon } from '@/icons';
+import { TrashBinIcon } from '@/icons';
 import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
 import { SpinnerLoader } from "@/components/ui/loader/loaders";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import EditarAgencia from "./EditarAgencia";
+import EditarArea from "./EditarArea";
+
+interface Area {
+  id: number;
+  nombre: string;
+  departamento: string | null;
+  createdAt: Date;
+}
 
 interface Props {
-  agencia: Agencia;
+  area: Area;
   onChange: () => void;
   onDelete: () => void;
 }
 
-const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
+const AreaListItem: React.FC<Props> = ({ area, onChange, onDelete }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState(false);
 
   const handleEliminar = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/agencias?id=${agencia.id}`, {
+      const response = await fetch(`/api/areas?id=${area.id}`, {
         method: "DELETE",
       });
       
@@ -31,7 +37,7 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
         closeModal();
         onDelete();
       } else {
-        console.error("Error al eliminar agencia");
+        console.error("Error al eliminar área");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -40,67 +46,29 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
     }
   };
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return "N/A";
+  const formatDate = (date: Date) => {
     return format(new Date(date), "dd/MM/yyyy", { locale: es });
   };
 
-  const hasValidContract = agencia.contratoAgenciaInicio && agencia.contratoAgenciaFin;
-
   return (
-    <TableRow key={agencia.id}>
+    <TableRow key={area.id}>
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
         <div className="font-medium text-gray-900 dark:text-white">
-          {agencia.nombre || "Sin nombre"}
-        </div>
-        {agencia.nitAgencia && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            NIT: {agencia.nitAgencia}
-          </div>
-        )}
-      </TableCell>
-      
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {agencia.agente ? `${agencia.agente.nombres} ${agencia.agente.apellidos}` : agencia.agenteNombre || "No asignado"}
-      </TableCell>
-      
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {agencia.ciudad?.nombre || "No especificada"}
-      </TableCell>
-      
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        <div className="flex items-start">
-          <MapIcon className="w-4 h-4 mt-0.5 mr-1 flex-shrink-0" />
-          <span>{agencia.direccion || "Sin dirección"}</span>
+          {area.nombre}
         </div>
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {hasValidContract ? (
-          <div>
-            <div className="text-xs">
-              Inicio: {formatDate(agencia.contratoAgenciaInicio)}
-            </div>
-            <div className="text-xs">
-              Fin: {formatDate(agencia.contratoAgenciaFin)}
-            </div>
-          </div>
-        ) : (
-          <span className="text-error-500 text-xs">Sin contrato</span>
-        )}
+        {area.departamento || "No especificado"}
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        <div className="flex space-x-2">
-          <EditarAgencia agencia={agencia} onSave={onChange} />
-          <Button 
-            size="sm" 
-            variant="outline" 
-            startIcon={<FileIcon />}
-            onClick={() => window.location.href = `/juridica/contratosAgencia?agenciaId=${agencia.id}`}
-          >
-            Contratos
-          </Button>
+        {formatDate(area.createdAt)}
+      </TableCell>
+      
+      <TableCell className="px-4 py-3 text-gray-500 text-end text-theme-sm dark:text-gray-400">
+        <div className="flex space-x-2 justify-end">
+          <EditarArea area={area} onSave={onChange} />
           <Button 
             size="sm" 
             variant="danger" 
@@ -123,7 +91,7 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
                 Confirmar eliminación
               </h5>
               <p className="text-gray-600 dark:text-gray-300">
-                ¿Está seguro que desea eliminar la agencia <strong>{agencia.nombre}</strong>?
+                ¿Está seguro que desea eliminar el área <strong>{area.nombre}</strong>?
                 Esta acción no se puede deshacer.
               </p>
             </div>
@@ -156,4 +124,4 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
   );
 };
 
-export default AgenciaListItem;
+export default AreaListItem;
