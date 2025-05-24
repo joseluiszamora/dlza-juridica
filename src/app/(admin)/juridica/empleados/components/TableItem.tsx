@@ -1,6 +1,6 @@
 import Button from "@/components/ui/button/Button";
 import { TableRow, TableCell } from "@/components/ui/table";
-import { TrashBinIcon } from '@/icons';
+import { ImageIcon, TrashBinIcon } from '@/icons';
 import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
@@ -76,9 +76,31 @@ const EmpleadoListItem: React.FC<Props> = ({ empleado, onChange, onDelete }) => 
 
   return (
     <TableRow key={empleado.id}>
-      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        <div className="font-medium text-gray-900 dark:text-white">
-          {`${empleado.nombres} ${empleado.apellidos}`}
+      <TableCell className="px-4 py-3 text-start text-theme-sm dark:text-gray-400">
+        <div className="flex items-center">
+          <div className="w-10 h-10 mr-3 overflow-hidden bg-gray-200 rounded-full flex-shrink-0 dark:bg-gray-700">
+            {empleado.imagenUrl ? (
+              <img 
+                src={empleado.imagenUrl} 
+                alt={`${empleado.nombres} ${empleado.apellidos}`} 
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full text-gray-400">
+                <ImageIcon className="w-5 h-5" />
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="font-medium text-gray-900 dark:text-white">
+              {`${empleado.nombres} ${empleado.apellidos}`}
+            </div>
+            {empleado.email && (
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {empleado.email}
+              </div>
+            )}
+          </div>
         </div>
       </TableCell>
       

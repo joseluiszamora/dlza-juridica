@@ -75,6 +75,7 @@ model ContratoAgencia {
   testimonioNotarial    String?
   estado                String?   @default("vigente")
   observaciones         String?
+  activo                Boolean   @default(false)
   createdAt             DateTime  @default(now()) @db.Timestamptz(6)
   agenciaId             Int
   agencia               Agencia   @relation(fields: [agenciaId], references: [id])
@@ -144,21 +145,22 @@ model Area {
 }
 
 model Marca {
-  id                      Int       @id @default(autoincrement())
+  id                      Int               @id @default(autoincrement())
   nombre                  String
-  estado                  String    @default("renovada")
+  estado                  String            @default("renovada")
   logotipoUrl             String?
   genero                  String
   tipo                    String
   claseNiza               String
   numeroRegistro          String
-  fechaRegistro           DateTime  @db.Date
+  fechaRegistro           DateTime          @db.Date
   tramiteArealizar        String?
   fechaExpiracionRegistro DateTime?
   fechaLimiteRenovacion   DateTime?
   titular                 String
   apoderado               String
-  createdAt               DateTime  @default(now()) @db.Timestamptz(6)
+  createdAt               DateTime          @default(now()) @db.Timestamptz(6)
+  renovaciones            RenovacionMarca[]
 }
 
 model RenovacionMarca {
@@ -171,4 +173,6 @@ model RenovacionMarca {
   apoderado           String
   procesoSeguidoPor   String?
   createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  marcaId             Int
+  marca               Marca     @relation(fields: [marcaId], references: [id])
 }
