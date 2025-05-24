@@ -55,11 +55,11 @@ export async function POST(request: NextRequest) {
     if (body.vigenciaLicenciaFuncionamiento) {
       body.vigenciaLicenciaFuncionamiento = new Date(body.vigenciaLicenciaFuncionamiento);
     }
-    if (body.contratoAgenciaInicio) {
-      body.contratoAgenciaInicio = new Date(body.contratoAgenciaInicio);
+    if (body.inicioContratoVigente) {
+      body.inicioContratoVigente = new Date(body.inicioContratoVigente);
     }
-    if (body.contratoAgenciaFin) {
-      body.contratoAgenciaFin = new Date(body.contratoAgenciaFin);
+    if (body.finContratoVigente) {
+      body.finContratoVigente = new Date(body.finContratoVigente);
     }
 
     // Asegurarse de que agenteId y ciudadId sean enteros
@@ -108,11 +108,11 @@ export async function PUT(request: NextRequest) {
     if (body.vigenciaLicenciaFuncionamiento) {
       body.vigenciaLicenciaFuncionamiento = new Date(body.vigenciaLicenciaFuncionamiento);
     }
-    if (body.contratoAgenciaInicio) {
-      body.contratoAgenciaInicio = new Date(body.contratoAgenciaInicio);
+    if (body.inicioContratoVigente) {
+      body.inicioContratoVigente = new Date(body.inicioContratoVigente);
     }
-    if (body.contratoAgenciaFin) {
-      body.contratoAgenciaFin = new Date(body.contratoAgenciaFin);
+    if (body.finContratoVigente) {
+      body.finContratoVigente = new Date(body.finContratoVigente);
     }
 
     // Asegurarse de que agenteId y ciudadId sean enteros

@@ -20,8 +20,8 @@ const EditarContratoAgenciaModal: React.FC<Props> = ({
   const [formData, setFormData] = useState({
     id: contrato.id,
     codigoContrato: contrato.codigoContrato || "",
-    contratoAgenciaInicio: contrato.contratoAgenciaInicio ? new Date(contrato.contratoAgenciaInicio).toISOString().split("T")[0] : "",
-    contratoAgenciaFin: contrato.contratoAgenciaFin ? new Date(contrato.contratoAgenciaFin).toISOString().split("T")[0] : "",
+    contratoAgenciaInicio: contrato.contratoInicio ? new Date(contrato.contratoInicio).toISOString().split("T")[0] : "",
+    contratoAgenciaFin: contrato.contratoFin ? new Date(contrato.contratoFin).toISOString().split("T")[0] : "",
     tipoGarantia: contrato.tipoGarantia || "",
     montoGarantia: contrato.montoGarantia || 0,
     testimonioNotarial: contrato.testimonioNotarial || "",

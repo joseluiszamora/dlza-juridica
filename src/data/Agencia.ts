@@ -14,13 +14,11 @@ export default class Agencia {
   longitud: number | null;
   licenciaDeFuncionamiento: boolean | null;
   vigenciaLicenciaFuncionamiento: Date | null;
+  codigoContratoVigente: string;
+  inicioContratoVigente: Date | null;
+  finContratoVigente: Date | null;
   nitAgencia: string | null;
-  tipoGarantia: string | null;
-  montoGarantia: number | null;
-  testimonioNotarial: string | null;
   contratoAlquiler: string | null;
-  contratoAgenciaInicio: Date | null;
-  contratoAgenciaFin: Date | null;
   observaciones: string | null;
   created_at: Date;
 
@@ -37,13 +35,11 @@ export default class Agencia {
     longitud: number | null = null,
     licenciaDeFuncionamiento: boolean | null = null,
     vigenciaLicenciaFuncionamiento: Date | null = null,
+    codigoContratoVigente: string = "0",
+    inicioContratoVigente: Date | null = null,
+    finContratoVigente: Date | null = null,
     nitAgencia: string | null = null,
-    tipoGarantia: string | null = null,
-    montoGarantia: number | null = null,
-    testimonioNotarial: string | null = null,
     contratoAlquiler: string | null = null,
-    contratoAgenciaInicio: Date | null = null,
-    contratoAgenciaFin: Date | null = null,
     observaciones: string | null = null,
     created_at: Date = new Date()
   ) {
@@ -59,13 +55,11 @@ export default class Agencia {
     this.longitud = longitud;
     this.licenciaDeFuncionamiento = licenciaDeFuncionamiento;
     this.vigenciaLicenciaFuncionamiento = vigenciaLicenciaFuncionamiento;
+    this.codigoContratoVigente = codigoContratoVigente;
+    this.inicioContratoVigente = inicioContratoVigente;
+    this.finContratoVigente = finContratoVigente;
     this.nitAgencia = nitAgencia;
-    this.tipoGarantia = tipoGarantia;
-    this.montoGarantia = montoGarantia;
-    this.testimonioNotarial = testimonioNotarial;
     this.contratoAlquiler = contratoAlquiler;
-    this.contratoAgenciaInicio = contratoAgenciaInicio;
-    this.contratoAgenciaFin = contratoAgenciaFin;
     this.observaciones = observaciones;
     this.created_at = created_at;
   }

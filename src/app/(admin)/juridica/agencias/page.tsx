@@ -7,6 +7,7 @@ import AgenciaListItem from "./components/TableItem";
 import AgenciaTableHeader from "./components/TableHeader";
 import BuscarAgencia from "./components/BuscarAgencia";
 import NuevaAgencia from "./components/NuevaAgencia";
+import Button from "@/components/ui/button/Button";
 import { useToast } from "@/hooks/useToast";
 import { Toaster } from "@/components/ui/toaster/Toaster";
 
@@ -15,6 +16,7 @@ export default function Agencias() {
   const [agencias, setAgencias] = useState([] as Array<Agencia>);
   const [allAgencias, setAllAgencias] = useState([] as Array<Agencia>);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isNuevaAgenciaOpen, setIsNuevaAgenciaOpen] = useState(false);
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -88,10 +90,21 @@ export default function Agencias() {
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <BuscarAgencia onSearch={handleSearch} />
           <div className="flex justify-end">
-            <NuevaAgencia onSave={() => handleSaveSuccess(true)} />
+            <Button 
+              variant="primary"
+              onClick={() => setIsNuevaAgenciaOpen(true)}
+            >
+              Nueva Agencia
+            </Button>
           </div>
         </div>
       </div>
+
+      <NuevaAgencia 
+        isOpen={isNuevaAgenciaOpen} 
+        onClose={() => setIsNuevaAgenciaOpen(false)}
+        onAgenciaCreated={() => handleSaveSuccess(true)}
+      />
 
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">

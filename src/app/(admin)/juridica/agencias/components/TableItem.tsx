@@ -45,7 +45,7 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
     return format(new Date(date), "dd/MM/yyyy", { locale: es });
   };
 
-  const hasValidContract = agencia.contratoAgenciaInicio && agencia.contratoAgenciaFin;
+  const hasValidContract = agencia.inicioContratoVigente && agencia.finContratoVigente;
 
   return (
     <TableRow key={agencia.id}>
@@ -53,15 +53,13 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
         <div className="font-medium text-gray-900 dark:text-white">
           {agencia.nombre || "Sin nombre"}
         </div>
-        {agencia.nitAgencia && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            NIT: {agencia.nitAgencia}
-          </div>
-        )}
+        <div className="text-xs text-gray-500 dark:text-gray-400">
+          Código: {agencia.codigoContratoVigente}
+        </div>
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {agencia.agente ? `${agencia.agente.nombres} ${agencia.agente.apellidos}` : agencia.agenteNombre || "No asignado"}
+        {agencia.agenteNombre || "No asignado"}
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -79,10 +77,10 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
         {hasValidContract ? (
           <div>
             <div className="text-xs">
-              Inicio: {formatDate(agencia.contratoAgenciaInicio)}
+              Inicio: {formatDate(agencia.inicioContratoVigente)}
             </div>
             <div className="text-xs">
-              Fin: {formatDate(agencia.contratoAgenciaFin)}
+              Fin: {formatDate(agencia.finContratoVigente)}
             </div>
           </div>
         ) : (
