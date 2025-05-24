@@ -51,12 +51,7 @@ model Agencia {
   licenciaDeFuncionamiento       Boolean?
   vigenciaLicenciaFuncionamiento DateTime?         @db.Date
   nitAgencia                     String?
-  tipoGarantia                   String?
-  montoGarantia                  Float?            @db.Real
-  testimonioNotarial             String?
   contratoAlquiler               String?
-  contratoAgenciaInicio          DateTime?         @db.Date
-  contratoAgenciaFin             DateTime?         @db.Date
   observaciones                  String?
   agenteId                       Int               @default(1)
   ciudadId                       Int               @default(1)
@@ -66,19 +61,19 @@ model Agencia {
 }
 
 model ContratoAgencia {
-  id                    Int       @id @default(autoincrement())
-  codigoContrato        String
-  contratoAgenciaInicio DateTime? @db.Date
-  contratoAgenciaFin    DateTime? @db.Date
-  tipoGarantia          String?
-  montoGarantia         Float?    @db.Real
-  testimonioNotarial    String?
-  estado                String?   @default("vigente")
-  observaciones         String?
-  activo                Boolean   @default(false)
-  createdAt             DateTime  @default(now()) @db.Timestamptz(6)
-  agenciaId             Int
-  agencia               Agencia   @relation(fields: [agenciaId], references: [id])
+  id                 Int       @id @default(autoincrement())
+  codigoContrato     String
+  contratoInicio     DateTime? @db.Date
+  contratoFin        DateTime? @db.Date
+  tipoGarantia       String?
+  montoGarantia      Float?    @db.Real
+  testimonioNotarial String?
+  estado             String?   @default("vigente")
+  observaciones      String?
+  activo             Boolean   @default(false)
+  createdAt          DateTime  @default(now()) @db.Timestamptz(6)
+  agenciaId          Int
+  agencia            Agencia   @relation(fields: [agenciaId], references: [id])
 }
 
 model Agente {
