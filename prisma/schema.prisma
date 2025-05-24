@@ -50,6 +50,9 @@ model Agencia {
   longitud                       Float?            @db.Real
   licenciaDeFuncionamiento       Boolean?
   vigenciaLicenciaFuncionamiento DateTime?         @db.Date
+  codigoContratoVigente          String            @default("0")
+  inicioContratoVigente          DateTime?         @db.Date
+  finContratoVigente             DateTime?         @db.Date
   nitAgencia                     String?
   contratoAlquiler               String?
   observaciones                  String?

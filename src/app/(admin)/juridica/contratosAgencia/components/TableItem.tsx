@@ -47,9 +47,9 @@ const ContratoAgenciaListItem: React.FC<Props> = ({ contrato, onChange, onDelete
 
   // Verificar si el contrato está vigente basado en las fechas
   const isContractActive = () => {
-    if (!contrato.contratoAgenciaInicio || !contrato.contratoAgenciaFin) return false;
+    if (!contrato.contratoInicio || !contrato.contratoFin) return false;
     const now = new Date();
-    const endDate = new Date(contrato.contratoAgenciaFin);
+    const endDate = new Date(contrato.contratoFin);
     return endDate >= now;
   };
 
@@ -79,10 +79,10 @@ const ContratoAgenciaListItem: React.FC<Props> = ({ contrato, onChange, onDelete
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
         <div className="flex flex-col">
           <div className="flex items-center">
-            <span className="text-xs">Inicio: {formatDate(contrato.contratoAgenciaInicio)}</span>
+            <span className="text-xs">Inicio: {formatDate(contrato.contratoInicio)}</span>
           </div>
           <div className="flex items-center mt-1">
-            <span className="text-xs">Fin: {formatDate(contrato.contratoAgenciaFin)}</span>
+            <span className="text-xs">Fin: {formatDate(contrato.contratoFin)}</span>
           </div>
         </div>
       </TableCell>
@@ -104,6 +104,16 @@ const ContratoAgenciaListItem: React.FC<Props> = ({ contrato, onChange, onDelete
             </div>
           )}
         </div>
+      </TableCell>
+      
+      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+        <span className={`inline-block rounded-full px-2 py-1 text-xs ${
+          contrato.activo 
+            ? "bg-success-100 text-success-700" 
+            : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+        }`}>
+          {contrato.activo ? "Activo" : "Inactivo"}
+        </span>
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">

@@ -75,20 +75,21 @@ export async function POST(req: NextRequest) {
     }
     
     // Formatear fechas si existen
-    const contratoAgenciaInicio = data.contratoAgenciaInicio ? new Date(data.contratoAgenciaInicio) : null;
-    const contratoAgenciaFin = data.contratoAgenciaFin ? new Date(data.contratoAgenciaFin) : null;
+    const contratoInicio = data.contratoInicio ? new Date(data.contratoInicio) : null;
+    const contratoFin = data.contratoFin ? new Date(data.contratoFin) : null;
     
     // Crear el nuevo contrato
     const nuevoContrato = await prisma.contratoAgencia.create({
       data: {
         codigoContrato: data.codigoContrato,
-        contratoAgenciaInicio: contratoAgenciaInicio,
-        contratoAgenciaFin: contratoAgenciaFin,
+        contratoInicio: contratoInicio,
+        contratoFin: contratoFin,
         tipoGarantia: data.tipoGarantia || null,
         montoGarantia: data.montoGarantia || null,
         testimonioNotarial: data.testimonioNotarial || null,
         estado: data.estado || "vigente",
         observaciones: data.observaciones || null,
+        activo: data.activo !== undefined ? data.activo : false,
         agenciaId: parseInt(data.agenciaId)
       }
     });
@@ -118,8 +119,8 @@ export async function PUT(req: NextRequest) {
     }
     
     // Formatear fechas si existen
-    const contratoAgenciaInicio = data.contratoAgenciaInicio ? new Date(data.contratoAgenciaInicio) : null;
-    const contratoAgenciaFin = data.contratoAgenciaFin ? new Date(data.contratoAgenciaFin) : null;
+    const contratoInicio = data.contratoInicio ? new Date(data.contratoInicio) : null;
+    const contratoFin = data.contratoFin ? new Date(data.contratoFin) : null;
     
     // Actualizar el contrato
     const contratoActualizado = await prisma.contratoAgencia.update({
@@ -128,13 +129,14 @@ export async function PUT(req: NextRequest) {
       },
       data: {
         codigoContrato: data.codigoContrato,
-        contratoAgenciaInicio: contratoAgenciaInicio,
-        contratoAgenciaFin: contratoAgenciaFin,
+        contratoInicio: contratoInicio,
+        contratoFin: contratoFin,
         tipoGarantia: data.tipoGarantia || null,
         montoGarantia: data.montoGarantia || null,
         testimonioNotarial: data.testimonioNotarial || null,
         estado: data.estado || "vigente",
         observaciones: data.observaciones || null,
+        activo: data.activo !== undefined ? data.activo : false,
         agenciaId: parseInt(data.agenciaId)
       }
     });

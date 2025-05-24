@@ -18,13 +18,14 @@ const EditarContratoAgencia: React.FC<Props> = ({ contrato, onSave }) => {
   const [formData, setFormData] = useState({
     id: contrato.id,
     codigoContrato: contrato.codigoContrato || "",
-    contratoAgenciaInicio: contrato.contratoAgenciaInicio ? new Date(contrato.contratoAgenciaInicio).toISOString().split("T")[0] : "",
-    contratoAgenciaFin: contrato.contratoAgenciaFin ? new Date(contrato.contratoAgenciaFin).toISOString().split("T")[0] : "",
+    contratoInicio: contrato.contratoInicio ? new Date(contrato.contratoInicio).toISOString().split("T")[0] : "",
+    contratoFin: contrato.contratoFin ? new Date(contrato.contratoFin).toISOString().split("T")[0] : "",
     tipoGarantia: contrato.tipoGarantia || "",
     montoGarantia: contrato.montoGarantia || 0,
     testimonioNotarial: contrato.testimonioNotarial || "",
     estado: contrato.estado || "vigente",
     observaciones: contrato.observaciones || "",
+    activo: contrato.activo || false,
     agenciaId: contrato.agenciaId
   });
   const [agencias, setAgencias] = useState<Agencia[]>([]);
@@ -52,10 +53,11 @@ const EditarContratoAgencia: React.FC<Props> = ({ contrato, onSave }) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setFormData({
       ...formData,
-      [name]: name === "montoGarantia" ? parseFloat(value) || 0 : value,
+      [name]: name === "montoGarantia" ? parseFloat(value) || 0 : 
+              type === "checkbox" ? checked : value,
     });
   };
 
@@ -146,14 +148,14 @@ const EditarContratoAgencia: React.FC<Props> = ({ contrato, onSave }) => {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="contratoAgenciaInicio" className="mb-2.5 block font-medium text-gray-700 dark:text-gray-200">
+                <label htmlFor="contratoInicio" className="mb-2.5 block font-medium text-gray-700 dark:text-gray-200">
                   Fecha de Inicio
                 </label>
                 <input
                   type="date"
-                  id="contratoAgenciaInicio"
-                  name="contratoAgenciaInicio"
-                  value={formData.contratoAgenciaInicio}
+                  id="contratoInicio"
+                  name="contratoInicio"
+                  value={formData.contratoInicio}
                   onChange={handleChange}
                   className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
                   required
@@ -161,14 +163,14 @@ const EditarContratoAgencia: React.FC<Props> = ({ contrato, onSave }) => {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="contratoAgenciaFin" className="mb-2.5 block font-medium text-gray-700 dark:text-gray-200">
+                <label htmlFor="contratoFin" className="mb-2.5 block font-medium text-gray-700 dark:text-gray-200">
                   Fecha de Fin
                 </label>
                 <input
                   type="date"
-                  id="contratoAgenciaFin"
-                  name="contratoAgenciaFin"
-                  value={formData.contratoAgenciaFin}
+                  id="contratoFin"
+                  name="contratoFin"
+                  value={formData.contratoFin}
                   onChange={handleChange}
                   className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
                   required
@@ -240,6 +242,22 @@ const EditarContratoAgencia: React.FC<Props> = ({ contrato, onSave }) => {
                   <option value="vencido">Vencido</option>
                   <option value="cancelado">Cancelado</option>
                 </select>
+              </div>
+
+              <div className="mb-4">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="activo"
+                    name="activo"
+                    checked={formData.activo}
+                    onChange={handleChange}
+                    className="mr-2 h-4 w-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
+                  />
+                  <label htmlFor="activo" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                    Contrato activo
+                  </label>
+                </div>
               </div>
             </div>
 
