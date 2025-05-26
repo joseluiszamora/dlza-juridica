@@ -88,8 +88,8 @@ export default function RenovacionesMarca() {
     }
   };
 
-  const handleSearch = (filters: {search: string; estado: string; marcaId?: string}) => {
-    setSearchTerm(filters.search);
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
   };
 
   const handleDeleteSuccess = () => {
@@ -128,8 +128,6 @@ export default function RenovacionesMarca() {
           <div className="flex items-center">
             <BuscarRenovacionMarca 
               onSearch={handleSearch}
-              marcaId={selectedMarcaId?.toString()}
-              marcaNombre={selectedMarcaNombre}
             />
             {selectedMarcaId && (
               <button 

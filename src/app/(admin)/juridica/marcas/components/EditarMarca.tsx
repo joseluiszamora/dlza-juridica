@@ -128,12 +128,12 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
   return (
     <>
       <Button
-        variant="outline"
-        size="sm"
+        size="sm" 
+        variant="primary" 
+        startIcon={<PencilIcon />} 
         onClick={() => setIsOpen(true)}
-        className="text-blue-600 hover:text-blue-700 dark:text-blue-400"
       >
-        <PencilIcon size={16} />
+        Editar
       </Button>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} className="max-w-4xl p-6">

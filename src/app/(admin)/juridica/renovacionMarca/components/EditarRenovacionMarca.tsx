@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { EditIcon } from "@/icons";
+import { PencilIcon } from "@/icons";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import RenovacionMarca from "@/data/RenovacionMarca";
@@ -169,11 +169,10 @@ const EditarRenovacionMarca: React.FC<Props> = ({ renovacion, onSave }) => {
     <>
       <Button
         onClick={() => setIsOpen(true)}
-        variant="outline"
-        size="sm"
-        className="flex items-center gap-2"
+        size="sm" 
+        variant="primary" 
+        startIcon={<PencilIcon />} 
       >
-        <EditIcon className="h-4 w-4" />
         Editar
       </Button>
 

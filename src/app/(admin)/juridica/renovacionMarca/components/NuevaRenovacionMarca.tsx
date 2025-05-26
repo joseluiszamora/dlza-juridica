@@ -188,11 +188,12 @@ const NuevaRenovacionMarca: React.FC<Props> = ({ onSave, marcaId }) => {
 
   return (
     <>
-      <Button
+    <Button 
+        size="sm" 
+        variant="primary" 
+        startIcon={<PlusIcon />} 
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2"
       >
-        <PlusIcon className="h-4 w-4" />
         Nueva Renovación
       </Button>
 

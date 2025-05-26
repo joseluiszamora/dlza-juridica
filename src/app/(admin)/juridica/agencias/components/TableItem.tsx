@@ -107,13 +107,13 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
             Contratos
           </Button>
           <EditarAgencia agencia={agencia} onSave={onChange} />
-          <Button 
-            size="sm" 
-            variant="danger" 
-            startIcon={<TrashBinIcon />} 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={openModal}
+            className="text-red-600 hover:text-red-700 dark:text-red-400"
           >
-            Eliminar
+            <TrashBinIcon size={16} />
           </Button>
         </div>
 

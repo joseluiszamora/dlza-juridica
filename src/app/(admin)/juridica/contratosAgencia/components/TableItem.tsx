@@ -119,13 +119,13 @@ const ContratoAgenciaListItem: React.FC<Props> = ({ contrato, onChange, onDelete
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
         <div className="flex space-x-2">
           <EditarContratoAgencia contrato={contrato} onSave={onChange} />
-          <Button 
-            size="sm" 
-            variant="danger" 
-            startIcon={<TrashBinIcon />} 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={openModal}
+            className="text-red-600 hover:text-red-700 dark:text-red-400"
           >
-            Eliminar
+            <TrashBinIcon size={16} />
           </Button>
         </div>
 

@@ -64,7 +64,7 @@ const EditarArea: React.FC<Props> = ({ area, onSave }) => {
     <>
       <Button 
         size="sm" 
-        variant="outline" 
+        variant="primary" 
         startIcon={<PencilIcon />} 
         onClick={openModal}
       >
