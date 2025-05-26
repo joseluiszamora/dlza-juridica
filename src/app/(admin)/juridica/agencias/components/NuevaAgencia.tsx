@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import TextArea from "@/components/form/input/TextArea";
+import Select from "@/components/form/Select";
+import Agente from "@/data/Agente";
+import Ciudad from "@/data/Ciudad";
 
 interface NuevaAgenciaProps {
   isOpen: boolean;
@@ -13,7 +16,6 @@ interface NuevaAgenciaProps {
 
 interface FormData {
   nombre: string;
-  agenteNombre: string;
   inicioContratoVigente: string;
   finContratoVigente: string;
   direccion: string;
@@ -28,7 +30,6 @@ interface FormData {
 export default function NuevaAgencia({ isOpen, onClose, onAgenciaCreated }: NuevaAgenciaProps) {
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
-    agenteNombre: "",
     inicioContratoVigente: "",
     finContratoVigente: "",
     direccion: "",
@@ -40,7 +41,24 @@ export default function NuevaAgencia({ isOpen, onClose, onAgenciaCreated }: Nuev
     ciudadId: 1,
   });
 
+  const [agentes, setAgentes] = useState<Agente[]>([]);
+  const [ciudades, setCiudades] = useState<Ciudad[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Cargar agentes y ciudades cuando se abre el modal
+      Promise.all([
+        fetch('/api/agentes').then(res => res.json()),
+        fetch('/api/ciudades').then(res => res.json())
+      ]).then(([agentesData, ciudadesData]) => {
+        setAgentes(agentesData.data || []);
+        setCiudades(ciudadesData.data || []);
+      }).catch(error => {
+        console.error('Error cargando datos:', error);
+      });
+    }
+  }, [isOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
@@ -75,7 +93,6 @@ export default function NuevaAgencia({ isOpen, onClose, onAgenciaCreated }: Nuev
         onClose();
         setFormData({
           nombre: "",
-          agenteNombre: "",
           inicioContratoVigente: "",
           finContratoVigente: "",
           direccion: "",
@@ -116,13 +133,15 @@ export default function NuevaAgencia({ isOpen, onClose, onAgenciaCreated }: Nuev
               />
             </div>
             <div>
-              <Label htmlFor="agenteNombre">Nombre del Agente</Label>
-              <Input
-                id="agenteNombre"
-                name="agenteNombre"
-                defaultValue={formData.agenteNombre || ""}
-                onChange={handleInputChange}
-                placeholder="Nombre del agente"
+              <Label htmlFor="agenteId">Agente</Label>
+              <Select
+                defaultValue={formData.agenteId.toString()}
+                onChange={(value) => setFormData(prev => ({ ...prev, agenteId: parseInt(value) }))}
+                options={agentes.map(agente => ({
+                  value: agente.id.toString(),
+                  label: `${agente.nombres} ${agente.apellidos}`
+                }))}
+                placeholder="Seleccionar agente"
               />
             </div>
           </div>
@@ -150,15 +169,29 @@ export default function NuevaAgencia({ isOpen, onClose, onAgenciaCreated }: Nuev
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="direccion">Dirección</Label>
-            <Input
-              id="direccion"
-              name="direccion"
-              defaultValue={formData.direccion || ""}
-              onChange={handleInputChange}
-              placeholder="Dirección de la agencia"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="direccion">Dirección</Label>
+              <Input
+                id="direccion"
+                name="direccion"
+                defaultValue={formData.direccion || ""}
+                onChange={handleInputChange}
+                placeholder="Dirección de la agencia"
+              />
+            </div>
+            <div>
+              <Label htmlFor="ciudadId">Ciudad</Label>
+              <Select
+                defaultValue={formData.ciudadId.toString()}
+                onChange={(value) => setFormData(prev => ({ ...prev, ciudadId: parseInt(value) }))}
+                options={ciudades.map(ciudad => ({
+                  value: ciudad.id.toString(),
+                  label: ciudad.nombre || "Ciudad sin nombre"
+                }))}
+                placeholder="Seleccionar ciudad"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

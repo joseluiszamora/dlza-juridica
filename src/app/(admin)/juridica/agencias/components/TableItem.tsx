@@ -59,7 +59,7 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        {agencia.agenteNombre || "No asignado"}
+        {agencia.agente ? `${agencia.agente.nombres} ${agencia.agente.apellidos}` : "No asignado"}
       </TableCell>
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -70,6 +70,14 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
         <div className="flex items-start">
           <MapIcon className="w-4 h-4 mt-0.5 mr-1 flex-shrink-0" />
           <span>{agencia.direccion || "Sin dirección"}</span>
+        </div>
+      </TableCell>
+      
+      <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+        <div className="flex items-center justify-center">
+          <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">
+            {agencia.contratos?.length || 0}
+          </span>
         </div>
       </TableCell>
       
@@ -90,7 +98,6 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
       
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
         <div className="flex space-x-2">
-          <EditarAgencia agencia={agencia} onSave={onChange} />
           <Button 
             size="sm" 
             variant="outline" 
@@ -99,6 +106,7 @@ const AgenciaListItem: React.FC<Props> = ({ agencia, onChange, onDelete }) => {
           >
             Contratos
           </Button>
+          <EditarAgencia agencia={agencia} onSave={onChange} />
           <Button 
             size="sm" 
             variant="danger" 

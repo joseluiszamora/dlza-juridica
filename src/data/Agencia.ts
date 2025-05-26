@@ -1,10 +1,10 @@
 import Agente from "./Agente";
 import Ciudad from "./Ciudad";
+import ContratoAgencia from "./ContratoAgencia";
 
 export default class Agencia {
   id: number;
   nombre: string | null;
-  agenteNombre: string | null;
   agenteId: number;
   agente?: Agente;
   direccion: string | null;
@@ -21,11 +21,11 @@ export default class Agencia {
   contratoAlquiler: string | null;
   observaciones: string | null;
   created_at: Date;
+  contratos?: ContratoAgencia[];
 
   constructor(
     id: number,
     nombre: string | null = "",
-    agenteNombre: string | null = "",
     agenteId: number = 1,
     agente?: Agente,
     direccion: string | null = "",
@@ -41,11 +41,11 @@ export default class Agencia {
     nitAgencia: string | null = null,
     contratoAlquiler: string | null = null,
     observaciones: string | null = null,
-    created_at: Date = new Date()
+    created_at: Date = new Date(),
+    contratos?: ContratoAgencia[]
   ) {
     this.id = id;
     this.nombre = nombre;
-    this.agenteNombre = agenteNombre;
     this.agenteId = agenteId;
     this.agente = agente;
     this.direccion = direccion;
@@ -62,5 +62,6 @@ export default class Agencia {
     this.contratoAlquiler = contratoAlquiler;
     this.observaciones = observaciones;
     this.created_at = created_at;
+    this.contratos = contratos;
   }
 }

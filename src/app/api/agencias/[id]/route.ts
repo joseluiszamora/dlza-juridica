@@ -6,16 +6,16 @@ const prisma = new PrismaClient();
 // PUT - Actualizar una agencia
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
     const body = await request.json();
 
     // Extraer y convertir fechas si están presentes
     const updateData: Record<string, unknown> = {
       nombre: body.nombre,
-      agenteNombre: body.agenteNombre,
       direccion: body.direccion,
       codigoContratoVigente: body.codigoContratoVigente,
       nitAgencia: body.nitAgencia,
@@ -60,10 +60,11 @@ export async function PUT(
 // DELETE - Eliminar una agencia
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
 
     await prisma.agencia.delete({
       where: { id }

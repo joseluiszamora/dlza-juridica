@@ -20,8 +20,28 @@ export default function Agencias() {
   const { addToast } = useToast();
 
   useEffect(() => {
+    const getData = () => {
+      setLoading(true);
+      fetch("/api/agencias")
+        .then((response) => response.json())
+        .then((data) => {
+          setLoading(false);
+          setAgencias(data.data);
+          setAllAgencias(data.data);
+        })
+        .catch(error => {
+          setLoading(false);
+          console.log(error);
+          addToast({
+            title: "Error",
+            description: "No se pudieron cargar las agencias",
+            variant: "destructive"
+          });
+        });
+    };
+    
     getData();
-  }, []);
+  }, [addToast]);
 
   useEffect(() => {
     // Filtrar agencias cuando cambia el término de búsqueda
@@ -32,13 +52,14 @@ export default function Agencias() {
         agencia.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         agencia.agente?.nombres?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         agencia.agente?.apellidos?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        `${agencia.agente?.nombres} ${agencia.agente?.apellidos}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
         agencia.ciudad?.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setAgencias(filteredAgencias);
     }
   }, [searchTerm, allAgencias]);
 
-  const getData = () => {
+  const refreshData = () => {
     setLoading(true);
     fetch("/api/agencias")
       .then((response) => response.json())
@@ -63,7 +84,7 @@ export default function Agencias() {
   };
 
   const handleDeleteSuccess = () => {
-    getData();
+    refreshData();
     addToast({
       title: "Agencia eliminada",
       description: "La agencia ha sido eliminada correctamente",
@@ -72,7 +93,7 @@ export default function Agencias() {
   };
 
   const handleSaveSuccess = (isNew = false) => {
-    getData();
+    refreshData();
     addToast({
       title: "Operación exitosa",
       description: isNew 

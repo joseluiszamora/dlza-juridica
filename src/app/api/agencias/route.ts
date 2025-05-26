@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
         include: {
           agente: true,
           ciudad: true,
+          contratos: true,
         }
       });
 
@@ -33,6 +34,7 @@ export async function GET(request: NextRequest) {
         include: {
           agente: true,
           ciudad: true,
+          contratos: true,
         }
       });
       return NextResponse.json({ data: agencias });

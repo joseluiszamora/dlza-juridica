@@ -4,8 +4,11 @@ import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import TextArea from "@/components/form/input/TextArea";
+import Select from "@/components/form/Select";
 import { PencilIcon } from "@/icons";
 import Agencia from "@/data/Agencia";
+import Agente from "@/data/Agente";
+import Ciudad from "@/data/Ciudad";
 
 interface EditarAgenciaProps {
   agencia: Agencia;
@@ -14,7 +17,6 @@ interface EditarAgenciaProps {
 
 interface FormData {
   nombre: string;
-  agenteNombre: string;
   inicioContratoVigente: string;
   finContratoVigente: string;
   direccion: string;
@@ -29,9 +31,10 @@ interface FormData {
 export default function EditarAgencia({ agencia, onSave }: EditarAgenciaProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [agentes, setAgentes] = useState<Agente[]>([]);
+  const [ciudades, setCiudades] = useState<Ciudad[]>([]);
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
-    agenteNombre: "",
     inicioContratoVigente: "",
     finContratoVigente: "",
     direccion: "",
@@ -47,7 +50,6 @@ export default function EditarAgencia({ agencia, onSave }: EditarAgenciaProps) {
     if (agencia) {
       setFormData({
         nombre: agencia.nombre || "",
-        agenteNombre: agencia.agenteNombre || "",
         inicioContratoVigente: agencia.inicioContratoVigente ? 
           new Date(agencia.inicioContratoVigente).toISOString().split('T')[0] : "",
         finContratoVigente: agencia.finContratoVigente ? 
@@ -62,6 +64,21 @@ export default function EditarAgencia({ agencia, onSave }: EditarAgenciaProps) {
       });
     }
   }, [agencia]);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Cargar agentes y ciudades cuando se abre el modal
+      Promise.all([
+        fetch('/api/agentes').then(res => res.json()),
+        fetch('/api/ciudades').then(res => res.json())
+      ]).then(([agentesData, ciudadesData]) => {
+        setAgentes(agentesData.data || []);
+        setCiudades(ciudadesData.data || []);
+      }).catch(error => {
+        console.error('Error cargando datos:', error);
+      });
+    }
+  }, [isOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target as HTMLInputElement;
@@ -109,19 +126,24 @@ export default function EditarAgencia({ agencia, onSave }: EditarAgenciaProps) {
     <>
       <Button
         size="sm"
-        variant="outline"
+        variant="primary"
+        startIcon={<PencilIcon />} 
         onClick={() => setIsOpen(true)}
-        className="h-8 w-8 p-0"
       >
-        <PencilIcon className="h-4 w-4" />
+        Editar
       </Button>
 
       <Modal 
         isOpen={isOpen} 
-        onClose={() => setIsOpen(false)}
+        onClose={() => setIsOpen(false)} 
+        className="max-w-[700px] p-6 lg:p-10"
       >
-        <div className="space-y-6">
-          <h2 className="text-lg font-semibold">Editar Agencia</h2>
+        <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar max-h-[80vh]">
+          <div>
+            <h5 className="mb-2 pb-10 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
+              {`Editar Agencia: ${agencia.nombre || "Sin nombre"}`}
+            </h5>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -135,13 +157,15 @@ export default function EditarAgencia({ agencia, onSave }: EditarAgenciaProps) {
               />
             </div>
             <div>
-              <Label htmlFor="agenteNombre">Nombre del Agente</Label>
-              <Input
-                id="agenteNombre"
-                name="agenteNombre"
-                defaultValue={formData.agenteNombre || ""}
-                onChange={handleInputChange}
-                placeholder="Nombre del agente"
+              <Label htmlFor="agenteId">Agente</Label>
+              <Select
+                defaultValue={formData.agenteId.toString()}
+                onChange={(value) => setFormData(prev => ({ ...prev, agenteId: parseInt(value) }))}
+                options={agentes.map(agente => ({
+                  value: agente.id.toString(),
+                  label: `${agente.nombres} ${agente.apellidos}`
+                }))}
+                placeholder="Seleccionar agente"
               />
             </div>
           </div>
@@ -169,15 +193,29 @@ export default function EditarAgencia({ agencia, onSave }: EditarAgenciaProps) {
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="direccion">Dirección</Label>
-            <Input
-              id="direccion"
-              name="direccion"
-              defaultValue={formData.direccion || ""}
-              onChange={handleInputChange}
-              placeholder="Dirección de la agencia"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="direccion">Dirección</Label>
+              <Input
+                id="direccion"
+                name="direccion"
+                defaultValue={formData.direccion || ""}
+                onChange={handleInputChange}
+                placeholder="Dirección de la agencia"
+              />
+            </div>
+            <div>
+              <Label htmlFor="ciudadId">Ciudad</Label>
+              <Select
+                defaultValue={formData.ciudadId.toString()}
+                onChange={(value) => setFormData(prev => ({ ...prev, ciudadId: parseInt(value) }))}
+                options={ciudades.map(ciudad => ({
+                  value: ciudad.id.toString(),
+                  label: ciudad.nombre || "Ciudad sin nombre"
+                }))}
+                placeholder="Seleccionar ciudad"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
