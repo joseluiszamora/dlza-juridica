@@ -10,6 +10,7 @@ import {
   HorizontaLDots,
   ListIcon,
   PaperPlaneIcon,
+  PieChartIcon,
   UserIcon,
 } from "../icons/index";
 
@@ -23,7 +24,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
+    name: "Inicio",
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
@@ -66,6 +67,16 @@ const navItems: NavItem[] = [
     name: "Areas",
     path: "/juridica/areas",
   },
+  {
+    icon: <UserIcon />,
+    name: "Marcas",
+    path: "/juridica/marcas",
+  },
+  {
+    icon: <UserIcon />,
+    name: "Renovacion Marcas",
+    path: "/juridica/renovacionMarca",
+  },
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendar",
@@ -98,14 +109,14 @@ const navItems: NavItem[] = [
 ];
 
 const othersItems: NavItem[] = [
-  // {
-  //   icon: <PieChartIcon />,
-  //   name: "Charts",
-  //   subItems: [
-  //     { name: "Line Chart", path: "/line-chart", pro: false },
-  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-  //   ],
-  // },
+  {
+    icon: <PieChartIcon />,
+    name: "Charts",
+    subItems: [
+      { name: "Line Chart", path: "/line-chart", pro: false },
+      { name: "Bar Chart", path: "/bar-chart", pro: false },
+    ],
+  },
   // {
   //   icon: <BoxCubeIcon />,
   //   name: "UI Elements",
@@ -127,6 +138,17 @@ const othersItems: NavItem[] = [
   //   ],
   // },
 ];
+
+// const agenciaItems: NavItem[] = [
+//   {
+//     icon: <PieChartIcon />,
+//     name: "Agencias",
+//     subItems: [
+//       { name: "Agencias", path: "/juridica/Agencia", pro: false },
+//       { name: "Contratos de Agencia", path: "/juridica/contratosAgencia", pro: false },
+//     ],
+//   },
+// ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -347,14 +369,14 @@ const AppSidebar: React.FC = () => {
             <>
               <Image
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/images/logo/logo_dlza.png"
                 alt="Logo"
                 width={150}
                 height={40}
               />
               <Image
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/images/logo/logo_dlza_dark.png"
                 alt="Logo"
                 width={150}
                 height={40}

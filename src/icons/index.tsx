@@ -58,6 +58,7 @@ import CheckIcon from "./check.svg";
 import XIcon from "./x.svg";
 import MapIcon from "./map.svg";
 import EditIcon from "./edit.svg";
+import MagnifyingGlassIcon from "./magnifying-glass.svg";
 
 export {
   DownloadIcon,
@@ -119,5 +120,6 @@ export {
   CheckIcon,
   XIcon,
   MapIcon,
-  EditIcon
+  EditIcon,
+  MagnifyingGlassIcon,
 };
