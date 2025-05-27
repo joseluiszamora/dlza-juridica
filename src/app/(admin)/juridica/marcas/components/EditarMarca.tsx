@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
-import { PencilIcon } from "@/icons";
+import { PencilIcon, FileIcon } from "@/icons";
 import Marca from "@/data/Marca";
 import { SpinnerLoader } from "@/components/ui/loader/loaders";
+import { uploadImageToSupabase } from "@/services/supabaseClient";
+import Image from "next/image";
 
 interface EditarMarcaProps {
   marca: Marca;
@@ -29,6 +31,8 @@ interface FormData {
 export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
     estado: "renovada",
@@ -88,6 +92,11 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
         titular: marca.titular || "",
         apoderado: marca.apoderado || "",
       });
+      
+      // Establecer imagen de previsualización si existe logotipoUrl
+      if (marca.logotipoUrl) {
+        setPreviewUrl(marca.logotipoUrl);
+      }
     }
   }, [marca]);
 
@@ -99,27 +108,84 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
     }));
   };
 
+  // Manejar la selección de imagen
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Verificar tipo de archivo
+      if (!file.type.match('image.*')) {
+        alert("Por favor seleccione una imagen válida (JPG, PNG, GIF)");
+        return;
+      }
+      
+      // Verificar tamaño (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("La imagen no puede superar los 5MB");
+        return;
+      }
+      
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  // Limpiar el formulario al cerrar modal
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+    if (marca.logotipoUrl) {
+      setPreviewUrl(marca.logotipoUrl);
+    } else {
+      setPreviewUrl(null);
+    }
+    setIsOpen(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      let logotipoUrl = formData.logotipoUrl;
+      
+      // Si se seleccionó una nueva imagen, subirla
+      if (selectedImage) {
+        const uploadedUrl = await uploadImageToSupabase(selectedImage, `marca-${formData.nombre}`, 'marcas');
+        if (uploadedUrl) {
+          logotipoUrl = uploadedUrl;
+        } else {
+          alert('Error al subir la imagen. Inténtelo de nuevo.');
+          setIsLoading(false);
+          return;
+        }
+      } else if (previewUrl === null) {
+        // Si se eliminó la imagen (previewUrl es null), limpiar la URL
+        logotipoUrl = '';
+      }
+      // Si no se hizo ningún cambio en la imagen, mantener el valor actual
+
       const response = await fetch(`/api/marcas/${marca.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          logotipoUrl
+        }),
       });
 
       if (response.ok) {
         onSave();
         setIsOpen(false);
+        alert('Marca actualizada exitosamente');
       } else {
-        console.error('Error updating marca');
+        const errorData = await response.json();
+        alert(`Error al actualizar la marca: ${errorData.message || 'Error desconocido'}`);
       }
     } catch (error) {
       console.error('Error:', error);
+      alert('Error al actualizar la marca. Inténtelo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +202,7 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
         Editar
       </Button>
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} className="max-w-4xl p-6">
+      <Modal isOpen={isOpen} onClose={handleCloseModal} className="max-w-4xl p-6">
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
             Editar Marca
@@ -321,19 +387,68 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
               </div>
             </div>
 
+            {/* Selector de imagen para logotipo */}
             <div>
-              <label htmlFor="logotipoUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                URL del Logotipo
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Logotipo de la Marca
               </label>
-              <input
-                id="logotipoUrl"
-                name="logotipoUrl"
-                type="text"
-                defaultValue={formData.logotipoUrl}
-                onChange={handleInputChange}
-                placeholder="URL de la imagen del logotipo"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              />
+              
+              <div className="space-y-4">
+                {/* Botón para seleccionar imagen */}
+                <div className="flex items-center gap-4">
+                  <label
+                    htmlFor="logotipo-upload"
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer transition-colors"
+                  >
+                    <FileIcon className="w-4 h-4 mr-2" />
+                    {selectedImage ? 'Cambiar imagen' : (previewUrl ? 'Cambiar imagen' : 'Seleccionar imagen')}
+                  </label>
+                  <input
+                    id="logotipo-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                  {(selectedImage || previewUrl) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedImage(null);
+                        setPreviewUrl(null);
+                        setFormData(prev => ({ ...prev, logotipoUrl: '' }));
+                      }}
+                      className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      Eliminar imagen
+                    </button>
+                  )}
+                </div>
+                
+                {/* Preview de la imagen */}
+                {previewUrl && (
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Vista previa:</p>
+                    <div className="relative w-32 h-32 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
+                      <Image
+                        src={previewUrl}
+                        alt="Preview del logotipo"
+                        fill
+                        style={{ objectFit: 'contain' }}
+                        className="p-2"
+                        onError={() => {
+                          console.error('Error cargando imagen de preview');
+                          setPreviewUrl(null);
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+                
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Formatos soportados: JPG, PNG, GIF. Tamaño máximo: 5MB
+                </p>
+              </div>
             </div>
 
             <div>
@@ -352,7 +467,7 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
             </div>
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Button variant="outline" onClick={() => setIsOpen(false)}>
+              <Button variant="outline" onClick={handleCloseModal}>
                 Cancelar
               </Button>
               <Button disabled={isLoading}>

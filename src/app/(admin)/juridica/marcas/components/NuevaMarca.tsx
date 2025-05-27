@@ -2,9 +2,11 @@
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
-import { PlusIcon } from "@/icons";
-import { useState } from "react";
+import { PlusIcon, FileIcon } from "@/icons";
+import { useState, ChangeEvent } from "react";
 import { SpinnerLoader } from "@/components/ui/loader/loaders";
+import { uploadImageToSupabase } from "@/services/supabaseClient";
+import Image from "next/image";
 
 interface Props {
   onSave: () => void;
@@ -29,6 +31,8 @@ interface FormData {
 const NuevaMarca: React.FC<Props> = ({ onSave }) => {
   const { isOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
     estado: "renovada",
@@ -76,37 +80,58 @@ const NuevaMarca: React.FC<Props> = ({ onSave }) => {
     }));
   };
 
+  // Manejar la selección de imagen
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Verificar tipo de archivo
+      if (!file.type.match('image.*')) {
+        console.error("Por favor seleccione una imagen válida");
+        return;
+      }
+      
+      // Verificar tamaño (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        console.error("La imagen no puede superar los 5MB");
+        return;
+      }
+      
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      let logotipoUrl = formData.logotipoUrl;
+      
+      // Subir imagen si se seleccionó una
+      if (selectedImage) {
+        const uploadedUrl = await uploadImageToSupabase(selectedImage, `marca-${formData.nombre}`, 'marcas');
+        if (uploadedUrl) {
+          logotipoUrl = uploadedUrl;
+        }
+      }
+
       const response = await fetch('/api/marcas', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          logotipoUrl
+        }),
       });
 
       if (response.ok) {
         onSave();
         closeModal();
-        setFormData({
-          nombre: "",
-          estado: "renovada",
-          logotipoUrl: "",
-          genero: "marca producto",
-          tipo: "mixta",
-          claseNiza: "",
-          numeroRegistro: "",
-          fechaRegistro: "",
-          tramiteArealizar: "",
-          fechaExpiracionRegistro: "",
-          fechaLimiteRenovacion: "",
-          titular: "",
-          apoderado: "",
-        });
+        resetForm();
       } else {
         console.error('Error creating marca');
       }
@@ -115,6 +140,26 @@ const NuevaMarca: React.FC<Props> = ({ onSave }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      nombre: "",
+      estado: "renovada",
+      logotipoUrl: "",
+      genero: "marca producto",
+      tipo: "mixta",
+      claseNiza: "",
+      numeroRegistro: "",
+      fechaRegistro: "",
+      tramiteArealizar: "",
+      fechaExpiracionRegistro: "",
+      fechaLimiteRenovacion: "",
+      titular: "",
+      apoderado: "",
+    });
+    setSelectedImage(null);
+    setPreviewUrl(null);
   };
 
   return (
@@ -131,6 +176,58 @@ const NuevaMarca: React.FC<Props> = ({ onSave }) => {
           </h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Sección de imagen del logotipo */}
+            <div className="flex flex-col items-center mb-6">
+              <div 
+                className="relative w-32 h-32 mb-3 overflow-hidden bg-gray-100 rounded-lg dark:bg-gray-700"
+              >
+                {previewUrl ? (
+                  <div className="w-full h-full relative">
+                    <Image 
+                      src={previewUrl} 
+                      alt="Vista previa del logotipo" 
+                      fill
+                      sizes="128px"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full text-gray-400">
+                    <FileIcon className="w-12 h-12" />
+                  </div>
+                )}
+              </div>
+              
+              <label 
+                htmlFor="logotipo-image" 
+                className="px-4 py-2 text-sm font-medium text-white transition bg-brand-500 rounded-lg cursor-pointer hover:bg-brand-600"
+              >
+                Seleccionar Logotipo
+              </label>
+              <input
+                id="logotipo-image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              {previewUrl && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setPreviewUrl(null);
+                  }}
+                  className="mt-2 text-sm text-gray-500 underline dark:text-gray-400"
+                >
+                  Eliminar imagen
+                </button>
+              )}
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Formatos permitidos: JPG, PNG, GIF. Máximo 5MB.
+              </p>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -313,21 +410,6 @@ const NuevaMarca: React.FC<Props> = ({ onSave }) => {
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
-            </div>
-
-            <div>
-              <label htmlFor="logotipoUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                URL del Logotipo
-              </label>
-              <input
-                id="logotipoUrl"
-                name="logotipoUrl"
-                type="text"
-                value={formData.logotipoUrl}
-                onChange={handleInputChange}
-                placeholder="URL de la imagen del logotipo"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              />
             </div>
 
             <div>
