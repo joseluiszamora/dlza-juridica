@@ -202,13 +202,75 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
         Editar
       </Button>
 
-      <Modal isOpen={isOpen} onClose={handleCloseModal} className="max-w-4xl p-6">
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
+      <Modal isOpen={isOpen} onClose={handleCloseModal} className="max-w-[700px] p-6">
+        <div>
+          <h2 className="mb-5 text-xl font-semibold text-gray-800 dark:text-white">
             Editar Marca
           </h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Selector de imagen para logotipo */}
+            
+            <div className="flex flex-col items-center mb-6">
+
+              <div 
+                className="relative w-32 h-32 mb-3 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-700"
+              >
+                {previewUrl ? (
+                  <div className="w-full h-full relative">
+                    <Image 
+                      src={previewUrl} 
+                      alt="Vista previa" 
+                      fill
+                      sizes="128px"
+                      className="object-cover" 
+                      onError={() => {
+                        console.error('Error cargando imagen de preview');
+                        setPreviewUrl(null);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full text-gray-400">
+                    <FileIcon className="w-12 h-12" />
+                  </div>
+                )}
+              </div>
+
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Logotipo de la Marca
+              </label>
+              
+              <label 
+                htmlFor="profile-image-edit" 
+                className="px-4 py-2 text-sm font-medium text-white transition bg-brand-500 rounded-lg cursor-pointer hover:bg-brand-600"
+              >
+                Seleccionar Imagen
+              </label>
+              <input
+                id="profile-image-edit"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              {previewUrl && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setPreviewUrl(null);
+                  }}
+                  className="mt-2 text-sm text-gray-500 underline dark:text-gray-400"
+                >
+                  Eliminar imagen
+                </button>
+              )}
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Formatos permitidos: JPG, PNG, GIF. Máximo 5MB.
+              </p>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -384,70 +446,6 @@ export default function EditarMarca({ marca, onSave }: EditarMarcaProps) {
                   placeholder="Nombre del apoderado"
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 />
-              </div>
-            </div>
-
-            {/* Selector de imagen para logotipo */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Logotipo de la Marca
-              </label>
-              
-              <div className="space-y-4">
-                {/* Botón para seleccionar imagen */}
-                <div className="flex items-center gap-4">
-                  <label
-                    htmlFor="logotipo-upload"
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer transition-colors"
-                  >
-                    <FileIcon className="w-4 h-4 mr-2" />
-                    {selectedImage ? 'Cambiar imagen' : (previewUrl ? 'Cambiar imagen' : 'Seleccionar imagen')}
-                  </label>
-                  <input
-                    id="logotipo-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                  {(selectedImage || previewUrl) && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedImage(null);
-                        setPreviewUrl(null);
-                        setFormData(prev => ({ ...prev, logotipoUrl: '' }));
-                      }}
-                      className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                    >
-                      Eliminar imagen
-                    </button>
-                  )}
-                </div>
-                
-                {/* Preview de la imagen */}
-                {previewUrl && (
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Vista previa:</p>
-                    <div className="relative w-32 h-32 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-800">
-                      <Image
-                        src={previewUrl}
-                        alt="Preview del logotipo"
-                        fill
-                        style={{ objectFit: 'contain' }}
-                        className="p-2"
-                        onError={() => {
-                          console.error('Error cargando imagen de preview');
-                          setPreviewUrl(null);
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-                
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Formatos soportados: JPG, PNG, GIF. Tamaño máximo: 5MB
-                </p>
               </div>
             </div>
 

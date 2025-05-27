@@ -1,7 +1,7 @@
 import Button from "@/components/ui/button/Button";
 import { TableRow, TableCell } from "@/components/ui/table";
 import Marca from "@/data/Marca";
-import { TrashBinIcon } from '@/icons';
+import { ImageIcon, TrashBinIcon } from '@/icons';
 import { useState } from "react";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
@@ -67,16 +67,36 @@ const MarcaListItem: React.FC<Props> = ({ marca, onChange, onDelete }) => {
 
   return (
     <TableRow key={marca.id}>
+      <TableCell className="px-4 py-3 text-start text-theme-sm dark:text-gray-400">
+        <div className="flex items-center">
+          <div className="w-20 h-20 mr-3 overflow-hidden bg-gray-200 rounded-full flex-shrink-0 dark:bg-gray-700">
+            {marca.logotipoUrl ? (
+              <img 
+                src={marca.logotipoUrl} 
+                alt={`${marca.nombre}`} 
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full text-gray-400">
+                <ImageIcon className="w-5 h-5" />
+              </div>
+            )}
+          </div>
+          <div>
+            <div className="font-medium text-gray-900 dark:text-white">
+              {marca.nombre || "Sin nombre"}
+            </div>
+            {marca.tipo && (
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                {marca.genero} - {marca.tipo}
+              </div>
+            )}
+          </div>
+        </div>
+      </TableCell>
+      
       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-        <div className="font-medium text-gray-900 dark:text-white">
-          {marca.nombre || "Sin nombre"}
-        </div>
-        <div className="text-xs text-gray-500 dark:text-gray-400">
-          {marca.genero} - {marca.tipo}
-        </div>
-        <div className="text-xs text-gray-500 dark:text-gray-400">
-          Clase Niza: {marca.claseNiza}
-        </div>
+          {marca.claseNiza}
       </TableCell>
       
       <TableCell className="px-4 py-3">

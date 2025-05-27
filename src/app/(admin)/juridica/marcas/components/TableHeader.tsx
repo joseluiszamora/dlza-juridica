@@ -8,6 +8,9 @@ const MarcaTableHeader = () => {
           Información de la Marca
         </TableCell>
         <TableCell className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+          Clase NIZA
+        </TableCell>
+        <TableCell className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
           Registro y Estado
         </TableCell>
         <TableCell className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
